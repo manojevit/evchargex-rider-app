@@ -131,9 +131,17 @@ export default function Stations() {
           )}
         </Screen>
       ) : (
-        <View className="flex-1 px-5 pb-[130px] pt-1">
-          <StylizedMap stations={list} />
-        </View>
+        <Screen contentClassName="px-5 pt-1">
+          <View style={{ height: 400 }}>
+            <StylizedMap stations={list} />
+          </View>
+          <Txt weight="black" className="mb-2 mt-5 text-[17px] text-foreground">
+            {list.length} {list.length === 1 ? 'station' : 'stations'} nearby
+          </Txt>
+          {list.map((s) => (
+            <StationCard key={s.id} station={s} />
+          ))}
+        </Screen>
       )}
     </View>
   );

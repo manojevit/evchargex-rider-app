@@ -177,6 +177,7 @@ const LEDGER: LedgerEntry[] = [
 
 export const SUPPORT = {
   helpline: '+91 124 456 7890',
+  email: 'support@evchargex.com',
   hours: 'Answered 24 x 7',
   topics: [
     { id: 't1', title: 'A slot won’t open', body: 'If the authorised slot does not open within a few seconds, do not force it. Cancel the swap from the app and start again — you are never charged for a swap that does not complete.' },

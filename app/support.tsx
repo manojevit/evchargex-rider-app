@@ -2,18 +2,16 @@ import { useState } from 'react';
 import { Linking, Pressable, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from '@/lib/motion';
-import { ChevronDown, Headset, MessageCircle, Phone } from 'lucide-react-native';
+import { ChevronDown, Headset, Mail, Phone } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { colors, gradients } from '@/lib/theme';
 import { cn } from '@/lib/cn';
-import { useToast } from '@/lib/toast';
 import { SUPPORT } from '@/lib/data/account';
 
 export default function Support() {
-  const toast = useToast();
   const [open, setOpen] = useState<string | null>(SUPPORT.topics[0].id);
 
   return (
@@ -32,23 +30,20 @@ export default function Support() {
             {SUPPORT.hours} · Priority support for plan members.
           </Txt>
 
-          <View className="mt-4 flex-row gap-3">
-            <Pressable onPress={() => Linking.openURL(`tel:${SUPPORT.helpline.replace(/\s/g, '')}`)} className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl bg-white py-3.5">
+          <View className="mt-4 gap-2.5">
+            <Pressable onPress={() => Linking.openURL(`tel:${SUPPORT.helpline.replace(/\s/g, '')}`)} className="flex-row items-center justify-center gap-2 rounded-2xl bg-white py-3.5">
               <Phone size={18} color={colors.brand} />
-              <Txt weight="bold" className="text-[14px] text-brand-600">
-                Call helpline
+              <Txt weight="bold" className="text-[14.5px] text-brand-600">
+                Call {SUPPORT.helpline}
               </Txt>
             </Pressable>
-            <Pressable
-              onPress={() => toast.show('Live chat is coming soon.')}
-              className="h-[50px] w-[50px] items-center justify-center rounded-2xl bg-white/15"
-            >
-              <MessageCircle size={22} color="#fff" />
+            <Pressable onPress={() => Linking.openURL(`mailto:${SUPPORT.email}`)} className="flex-row items-center justify-center gap-2 rounded-2xl bg-white/15 py-3.5">
+              <Mail size={18} color="#fff" />
+              <Txt weight="bold" className="text-[14px] text-white" style={{ color: '#fff' }}>
+                {SUPPORT.email}
+              </Txt>
             </Pressable>
           </View>
-          <Txt weight="semibold" className="mt-3 text-center text-[13px] text-white" style={{ color: '#fff' }}>
-            {SUPPORT.helpline}
-          </Txt>
         </LinearGradient>
 
         {/* FAQ */}

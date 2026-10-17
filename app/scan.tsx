@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { MotiView } from '@/lib/motion';
-import { Camera, Check, Info, Keyboard, QrCode, X } from 'lucide-react-native';
+import { Camera, Check, QrCode, X } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Button } from '@/components/ui/Button';
 import { colors } from '@/lib/theme';
@@ -73,9 +73,6 @@ export default function Scan() {
               label={denied ? 'Open settings' : 'Allow camera'}
               onPress={() => (denied ? Linking.openSettings() : requestPermission())}
             />
-            <View className="mt-3">
-              <Button label="Enter code manually" variant="ghost" onPress={proceed} />
-            </View>
           </View>
         </View>
       </View>
@@ -133,23 +130,6 @@ export default function Scan() {
         )}
       </View>
 
-      <View style={{ paddingBottom: insets.bottom + 24 }} className="px-6">
-        <Pressable
-          onPress={proceed}
-          className="flex-row items-center justify-center gap-2 rounded-2xl bg-white/15 py-3.5"
-        >
-          <Keyboard size={18} color="#fff" />
-          <Txt weight="semibold" className="text-[14px]" style={{ color: '#fff' }}>
-            Enter code manually
-          </Txt>
-        </Pressable>
-        <View className="mt-3 flex-row items-center justify-center gap-1.5">
-          <Info size={13} color="rgba(255,255,255,0.6)" />
-          <Txt weight="regular" className="text-[12px]" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Point at any QR code to continue the demo.
-          </Txt>
-        </View>
-      </View>
     </View>
   );
 }

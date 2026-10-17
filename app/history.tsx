@@ -21,16 +21,35 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: 'cancelled', label: 'Cancelled' },
 ];
 
+type DateFilter = 'all' | 'week' | 'month';
+const DATE_FILTERS: { key: DateFilter; label: string }[] = [
+  { key: 'all', label: 'All time' },
+  { key: 'week', label: 'Last 7 days' },
+  { key: 'month', label: 'Last 30 days' },
+];
+const NOW = new Date('2026-10-17T12:00:00+05:30').getTime();
+const DAY = 24 * 60 * 60 * 1000;
+
 export default function History() {
   const { account } = useStore();
   const [filter, setFilter] = useState<Filter>('all');
+  const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const [showFilters, setShowFilters] = useState(false);
 
   const rows = useMemo(() => {
-    if (filter === 'all') return account.history;
-    if (filter === 'completed') return account.history.filter((r) => r.status === 'completed');
-    return account.history.filter((r) => r.status !== 'completed');
-  }, [account.history, filter]);
+    return account.history.filter((r) => {
+      if (filter === 'completed' && r.status !== 'completed') return false;
+      if (filter === 'cancelled' && r.status === 'completed') return false;
+      if (dateFilter !== 'all') {
+        const age = NOW - new Date(r.at).getTime();
+        if (dateFilter === 'week' && age > 7 * DAY) return false;
+        if (dateFilter === 'month' && age > 30 * DAY) return false;
+      }
+      return true;
+    });
+  }, [account.history, filter, dateFilter]);
+
+  const filterActive = filter !== 'all' || dateFilter !== 'all';
 
   return (
     <View className="flex-1 bg-background">
@@ -40,28 +59,49 @@ export default function History() {
         right={
           <Pressable
             onPress={() => setShowFilters((v) => !v)}
-            className={cn('mr-1 h-10 flex-row items-center gap-1.5 rounded-xl border px-3', showFilters || filter !== 'all' ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}
+            className={cn('mr-1 h-10 flex-row items-center gap-1.5 rounded-xl border px-3', showFilters || filterActive ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}
           >
-            <SlidersHorizontal size={15} color={showFilters || filter !== 'all' ? colors.brand : colors.ink} />
-            <Txt weight="bold" className={cn('text-[12px]', showFilters || filter !== 'all' ? 'text-brand-600' : 'text-ink')}>
+            <SlidersHorizontal size={15} color={showFilters || filterActive ? colors.brand : colors.ink} />
+            <Txt weight="bold" className={cn('text-[12px]', showFilters || filterActive ? 'text-brand-600' : 'text-ink')}>
               Filter
             </Txt>
           </Pressable>
         }
       />
       {showFilters && (
-        <View className="flex-row gap-2 px-5 pb-1 pt-1">
-          {FILTERS.map((f) => (
-            <Pressable
-              key={f.key}
-              onPress={() => setFilter(f.key)}
-              className={cn('rounded-full border px-3.5 py-1.5', filter === f.key ? 'border-brand-500 bg-brand-500' : 'border-border bg-card')}
-            >
-              <Txt weight="bold" className={cn('text-[12.5px]', filter === f.key ? 'text-white' : 'text-muted')} style={filter === f.key ? { color: '#fff' } : undefined}>
-                {f.label}
-              </Txt>
-            </Pressable>
-          ))}
+        <View className="px-5 pb-1 pt-1">
+          <Txt weight="bold" className="mb-1.5 text-[11px] uppercase tracking-wide text-muted">
+            Status
+          </Txt>
+          <View className="flex-row gap-2">
+            {FILTERS.map((f) => (
+              <Pressable
+                key={f.key}
+                onPress={() => setFilter(f.key)}
+                className={cn('rounded-full border px-3.5 py-1.5', filter === f.key ? 'border-brand-500 bg-brand-500' : 'border-border bg-card')}
+              >
+                <Txt weight="bold" className={cn('text-[12.5px]', filter === f.key ? 'text-white' : 'text-muted')} style={filter === f.key ? { color: '#fff' } : undefined}>
+                  {f.label}
+                </Txt>
+              </Pressable>
+            ))}
+          </View>
+          <Txt weight="bold" className="mb-1.5 mt-3 text-[11px] uppercase tracking-wide text-muted">
+            Date
+          </Txt>
+          <View className="flex-row gap-2">
+            {DATE_FILTERS.map((f) => (
+              <Pressable
+                key={f.key}
+                onPress={() => setDateFilter(f.key)}
+                className={cn('rounded-full border px-3.5 py-1.5', dateFilter === f.key ? 'border-brand-500 bg-brand-500' : 'border-border bg-card')}
+              >
+                <Txt weight="bold" className={cn('text-[12.5px]', dateFilter === f.key ? 'text-white' : 'text-muted')} style={dateFilter === f.key ? { color: '#fff' } : undefined}>
+                  {f.label}
+                </Txt>
+              </Pressable>
+            ))}
+          </View>
         </View>
       )}
       <Screen contentClassName="px-5 pt-1">

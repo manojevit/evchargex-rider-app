@@ -2,11 +2,11 @@ import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Home, Layers, ScanLine, UserRound, Zap } from 'lucide-react-native';
+import { Home, Layers, QrCode, UserRound, Zap } from 'lucide-react-native';
 import { MotiView } from '@/lib/motion';
 import { Txt } from '@/components/ui/Txt';
 import { tap } from '@/lib/haptics';
-import { colors, floatShadow, gradients } from '@/lib/theme';
+import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 
 const TABS: Record<string, { label: string; Icon: typeof Home }> = {
@@ -35,11 +35,11 @@ export function TabBar({ state, navigateToTab }: TabBarProps) {
             tap('medium');
             router.push('/scan');
           }}
-          style={({ pressed }) => [floatShadow, pressed && { transform: [{ scale: 0.92 }] }]}
+          style={({ pressed }) => [fabShadow, pressed && { transform: [{ scale: 0.92 }] }]}
           hitSlop={10}
         >
           <LinearGradient
-            colors={gradients.brand}
+            colors={['#263241', '#0B1420']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -48,11 +48,11 @@ export function TabBar({ state, navigateToTab }: TabBarProps) {
               borderRadius: 31,
               alignItems: 'center',
               justifyContent: 'center',
-              borderWidth: 4,
+              borderWidth: 3,
               borderColor: '#FFFFFF',
             }}
           >
-            <ScanLine size={28} color="#fff" strokeWidth={2.5} />
+            <QrCode size={27} color="#fff" strokeWidth={2.2} />
           </LinearGradient>
         </Pressable>
       </View>
@@ -113,4 +113,12 @@ const barShadow = {
   shadowRadius: 24,
   shadowOffset: { width: 0, height: 10 },
   elevation: 12,
+} as const;
+
+const fabShadow = {
+  shadowColor: '#0B1420',
+  shadowOpacity: 0.4,
+  shadowRadius: 14,
+  shadowOffset: { width: 0, height: 8 },
+  elevation: 10,
 } as const;

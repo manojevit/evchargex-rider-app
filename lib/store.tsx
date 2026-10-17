@@ -21,7 +21,11 @@ interface StoreValue {
   togglePersona: () => void;
 
   rider: Rider;
+  updateName: (name: string) => void;
   account: AccountSnapshot;
+
+  language: string;
+  setLanguage: (lang: string) => void;
 
   unreadAlerts: number;
   markAllAlertsRead: () => void;
@@ -34,6 +38,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [signedIn, setSignedIn] = useState(false);
   const [persona, setPersonaState] = useState<Persona>('rich');
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
+  const [riderName, setRiderName] = useState(RIDER.name);
+  const [language, setLanguage] = useState('English');
+
+  const rider = useMemo<Rider>(() => ({ ...RIDER, name: riderName }), [riderName]);
+  const updateName = useCallback((name: string) => setRiderName(name.trim() || RIDER.name), []);
 
   const setPersona = useCallback((p: Persona) => {
     setPersonaState(p);
@@ -78,8 +87,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     persona,
     setPersona,
     togglePersona,
-    rider: RIDER,
+    rider,
+    updateName,
     account,
+    language,
+    setLanguage,
     unreadAlerts,
     markAllAlertsRead,
     markAlertRead,

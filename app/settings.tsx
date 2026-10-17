@@ -21,12 +21,10 @@ import { IconTile } from '@/components/ui/IconTile';
 import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
-import { useToast } from '@/lib/toast';
 
 export default function Settings() {
   const router = useRouter();
-  const toast = useToast();
-  const { persona, setPersona } = useStore();
+  const { persona, setPersona, language } = useStore();
   const [push, setPush] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
 
@@ -90,7 +88,7 @@ export default function Settings() {
         {/* General */}
         <SectionTitle>General</SectionTitle>
         <Card className="p-0">
-          <Row icon={<Globe size={20} color={colors.info} />} tone="info" title="Language" value="English" onPress={() => toast.show('More languages coming soon.')} />
+          <Row icon={<Globe size={20} color={colors.info} />} tone="info" title="Language" value={language} onPress={() => router.push('/language')} />
         </Card>
 
         {/* Preferences */}

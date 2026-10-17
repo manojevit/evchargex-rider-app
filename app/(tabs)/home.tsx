@@ -137,33 +137,34 @@ export default function Home() {
           </View>
         </Pressable>
 
-        {/* This-month stats */}
+        {/* This-month stats — compact */}
         {plan && (
           <View className="mt-3 flex-row gap-3">
-            <Card className="flex-1">
-              <View className="flex-row items-center justify-between">
-                <Txt weight="bold" className="text-[11px] uppercase tracking-wide text-muted">
-                  This month
-                </Txt>
+            <Card className="flex-1 flex-row items-center p-3">
+              <IconTile tone="brand" size="sm">
                 <Repeat size={16} color={colors.brand} />
-              </View>
-              <Txt weight="black" className="mt-1.5 text-[22px] text-foreground">
-                {plan.this_month_swaps} swaps
-              </Txt>
-            </Card>
-            <Card className="flex-1">
-              <View className="flex-row items-center justify-between">
-                <Txt weight="bold" className="text-[11px] uppercase tracking-wide text-muted">
-                  Saved
+              </IconTile>
+              <View className="ml-2.5">
+                <Txt weight="black" className="text-[16px] text-foreground">
+                  {plan.this_month_swaps} swaps
                 </Txt>
-                <PiggyBank size={16} color={colors.success} />
+                <Txt weight="medium" className="text-[10.5px] text-muted">
+                  this month
+                </Txt>
               </View>
-              <Txt weight="black" className="mt-1.5 text-[22px] text-success">
-                {rupees(plan.saved_rupees)}
-              </Txt>
-              <Txt weight="medium" className="text-[11px] text-muted">
-                vs retail
-              </Txt>
+            </Card>
+            <Card className="flex-1 flex-row items-center p-3">
+              <IconTile tone="success" size="sm">
+                <PiggyBank size={16} color={colors.success} />
+              </IconTile>
+              <View className="ml-2.5">
+                <Txt weight="black" className="text-[16px] text-success">
+                  {rupees(plan.saved_rupees)}
+                </Txt>
+                <Txt weight="medium" className="text-[10.5px] text-muted">
+                  saved vs retail
+                </Txt>
+              </View>
             </Card>
           </View>
         )}

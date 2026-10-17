@@ -2,7 +2,6 @@ import { Linking, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
-  BatteryCharging,
   BatteryFull,
   BatteryWarning,
   CircleAlert,
@@ -88,37 +87,6 @@ export default function StationDetail() {
             </Txt>
           </View>
         </View>
-
-        {/* Batteries ready to swap */}
-        {online ? (
-          <View className="mt-4 flex-row items-center rounded-2xl bg-success-soft p-4">
-            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-white/70">
-              <BatteryCharging size={24} color={colors.success} />
-            </View>
-            <View className="ml-3 flex-1">
-              <Txt weight="black" className="text-[20px] text-success-ink">
-                {available} {available === 1 ? 'battery' : 'batteries'} ready
-              </Txt>
-              <Txt weight="semibold" className="text-[12.5px] text-success-ink">
-                Full batteries you can swap right now
-              </Txt>
-            </View>
-          </View>
-        ) : (
-          <View className="mt-4 flex-row items-center rounded-2xl bg-danger-soft p-4">
-            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-white/70">
-              <CircleAlert size={24} color={colors.danger} />
-            </View>
-            <View className="ml-3 flex-1">
-              <Txt weight="black" className="text-[16px] text-danger-ink">
-                Not reporting
-              </Txt>
-              <Txt weight="semibold" className="text-[12.5px] text-danger-ink">
-                Battery stock is unknown right now
-              </Txt>
-            </View>
-          </View>
-        )}
 
         {/* Availability — compact single row */}
         <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>

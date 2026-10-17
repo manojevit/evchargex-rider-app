@@ -44,9 +44,10 @@ export default function Menu() {
       <AppBar large title="Menu" bell />
       <Screen contentClassName="px-5 pt-1">
         {/* Profile */}
-        <View
+        <Pressable
+          onPress={() => router.push('/profile')}
           className="rounded-2xl bg-secondary p-4"
-          style={{ flexDirection: 'row', alignItems: 'center' }}
+          style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center' }, pressed && { opacity: 0.9 }]}
         >
           <View className="h-14 w-14 items-center justify-center rounded-full bg-brand-100">
             <Txt weight="black" className="text-[22px] text-brand-700">
@@ -62,7 +63,7 @@ export default function Menu() {
             </Txt>
           </View>
           <ChevronRight size={22} color={colors.muted} />
-        </View>
+        </Pressable>
 
         {/* List */}
         <Card className="mt-4 p-0">

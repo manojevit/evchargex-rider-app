@@ -57,6 +57,8 @@ export default function RootLayout() {
             <Stack.Screen name="alerts" />
             <Stack.Screen name="support" />
             <Stack.Screen name="settings" />
+            <Stack.Screen name="profile" />
+            <Stack.Screen name="language" />
           </Stack>
           </ToastProvider>
         </StoreProvider>
