@@ -1,8 +1,9 @@
-import { ActivityIndicator, Pressable, View, type PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, type GestureResponderEvent, type PressableProps } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Txt } from './Txt';
 import { cn } from '@/lib/cn';
+import { tap } from '@/lib/haptics';
 import { colors, floatShadow, gradients } from '@/lib/theme';
 
 /**
@@ -60,11 +61,17 @@ export function Button({
   rightIcon,
   className,
   disabled,
+  onPress,
   ...rest
 }: Props) {
   const isDisabled = disabled || loading;
   const textColor = TEXT_COLOR[variant ?? 'primary'];
   const textSize = TEXT_SIZE[size ?? 'lg'];
+
+  const handlePress = (e: GestureResponderEvent) => {
+    tap('light');
+    onPress?.(e);
+  };
 
   const content = (
     <>
@@ -91,6 +98,7 @@ export function Button({
     return (
       <Pressable
         disabled={isDisabled}
+        onPress={handlePress}
         style={({ pressed }) => [
           floatShadow,
           block ? { width: '100%' } : { alignSelf: 'flex-start' },
@@ -123,6 +131,7 @@ export function Button({
   return (
     <Pressable
       disabled={isDisabled}
+      onPress={handlePress}
       className={shell}
       style={({ pressed }) => (pressed ? { transform: [{ scale: 0.98 }], opacity: 0.9 } : undefined)}
       {...rest}
