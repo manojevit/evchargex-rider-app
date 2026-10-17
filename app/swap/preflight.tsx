@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
+import { StationImageCarousel } from '@/components/StationImageCarousel';
 import { colors } from '@/lib/theme';
 import { getStation } from '@/lib/data/stations';
 
@@ -43,6 +44,9 @@ export default function Preflight() {
     <View className="flex-1 bg-canvas">
       <AppBar title="Start swap" back />
       <Screen contentClassName="px-5 pt-1" padBottom={140}>
+        <View className="mb-3">
+          <StationImageCarousel images={station.images} online height={165} />
+        </View>
         <Card className="flex-row items-center">
           <IconTile tone="success" size="lg">
             <BatteryCharging size={28} color={colors.success} />

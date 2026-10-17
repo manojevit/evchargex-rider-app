@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { AnimatePresence, MotiView } from '@/lib/motion';
-import { ArrowDownToLine, ArrowUpFromLine, BatteryCharging, Check, DoorOpen, Hand } from 'lucide-react-native';
+import {
+  ArrowDownToLine,
+  ArrowRight,
+  ArrowUpFromLine,
+  BatteryCharging,
+  Check,
+  DoorClosed,
+} from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
+import { Button } from '@/components/ui/Button';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -27,14 +35,16 @@ const STEP_OF: Record<Phase, number> = {
   collected: 6,
   completed: 6,
 };
-const DURATION: Record<Phase, number> = {
-  return_open: 4500,
-  inserted: 3200,
-  verifying: 3000,
-  processing: 3200,
-  dispense_open: 4500,
-  collected: 2200,
-  completed: 0,
+
+// The rider advances each step themselves — nothing happens automatically.
+const NEXT_LABEL: Record<Phase, string> = {
+  return_open: 'I’ve inserted my battery',
+  inserted: 'I’ve closed the door',
+  verifying: 'Battery verified — continue',
+  processing: 'Dispense my charged battery',
+  dispense_open: 'I’ve collected the battery',
+  collected: 'Finish swap',
+  completed: '',
 };
 
 export default function SwapLive() {
@@ -49,7 +59,7 @@ export default function SwapLive() {
   const [remaining, setRemaining] = useState(180);
   const startedAt = useRef(Date.now());
 
-  // Countdown timer (runs through the active phases).
+  // Countdown — visual only; it never forces a step.
   useEffect(() => {
     if (phase === 'completed') return;
     const t = setInterval(() => {
@@ -59,19 +69,10 @@ export default function SwapLive() {
     return () => clearInterval(t);
   }, [phase]);
 
-  // Auto-advance the state machine.
-  const advance = useRef(() => {});
-  advance.current = () => {
-    setPhase((p) => {
-      const i = ORDER.indexOf(p);
-      return i < ORDER.length - 1 ? ORDER[i + 1] : p;
-    });
-  };
-  useEffect(() => {
-    if (phase === 'completed') return;
-    const t = setTimeout(() => advance.current(), DURATION[phase]);
-    return () => clearTimeout(t);
-  }, [phase]);
+  const advance = () => setPhase((p) => {
+    const i = ORDER.indexOf(p);
+    return i < ORDER.length - 1 ? ORDER[i + 1] : p;
+  });
 
   const dispenseSerial = useMemo(
     () => station?.slots.find((s) => s.slot_number === dispenseSlot)?.serial ?? 'INCBZG5145M0625',
@@ -80,7 +81,7 @@ export default function SwapLive() {
 
   if (!station) {
     return (
-      <View className="flex-1 bg-canvas">
+      <View className="flex-1 bg-background">
         <AppBar title="Swap" back />
       </View>
     );
@@ -105,50 +106,46 @@ export default function SwapLive() {
   const openSlot = phase === 'return_open' ? returnSlot : phase === 'dispense_open' ? dispenseSlot : null;
 
   return (
-    <View className="flex-1 bg-canvas">
+    <View className="flex-1 bg-background">
       <AppBar title="Swap in progress" />
-      <Pressable onPress={() => advance.current()} className="flex-1">
-        <Screen contentClassName="px-5 pt-2" padBottom={40}>
-          <AnimatePresence exitBeforeEnter>
-            <MotiView
-              key={phase}
-              from={{ opacity: 0, translateY: 12 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: -12 }}
-              transition={{ type: 'timing', duration: 280 }}
-            >
-              <PhaseView phase={phase} returnSlot={returnSlot} dispenseSlot={dispenseSlot} remaining={remaining} urgent={urgent} timerVisible={timerVisible} />
-            </MotiView>
-          </AnimatePresence>
+      <Screen contentClassName="px-5 pt-2" padBottom={120}>
+        <AnimatePresence exitBeforeEnter>
+          <MotiView
+            key={phase}
+            from={{ opacity: 0, translateY: 12 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -12 }}
+            transition={{ type: 'timing', duration: 260 }}
+          >
+            <PhaseView phase={phase} returnSlot={returnSlot} dispenseSlot={dispenseSlot} remaining={remaining} urgent={urgent} timerVisible={timerVisible} />
+          </MotiView>
+        </AnimatePresence>
 
-          {/* Live cabinet */}
-          <View className="mt-6">
-            <Txt weight="bold" className="mb-3 text-center text-[12px] uppercase tracking-widest text-muted">
-              Live cabinet status
-            </Txt>
-            <CabinetGrid slots={station.slots} highlightSlot={highlightSlot} openSlot={openSlot} />
-          </View>
+        {/* Live cabinet */}
+        <View className="mt-6">
+          <Txt weight="bold" className="mb-3 text-center text-[12px] uppercase tracking-widest text-muted">
+            Live cabinet status
+          </Txt>
+          <CabinetGrid slots={station.slots} highlightSlot={highlightSlot} openSlot={openSlot} />
+        </View>
 
-          {/* Step progress */}
-          <View className="mt-2 items-center">
-            <Txt weight="bold" className="mb-2 text-[11px] uppercase tracking-wider text-muted">
-              Step {step} of 6
-            </Txt>
-            <View className="w-[70%] flex-row gap-1.5">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <View key={i} className={cn('h-1.5 flex-1 rounded-full', i < step ? 'bg-brand-500' : 'bg-line')} />
-              ))}
-            </View>
+        {/* Step progress */}
+        <View className="mt-2 items-center">
+          <Txt weight="bold" className="mb-2 text-[11px] uppercase tracking-wider text-muted">
+            Step {step} of 6
+          </Txt>
+          <View className="w-[70%] flex-row gap-1.5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <View key={i} className={cn('h-1.5 flex-1 rounded-full', i < step ? 'bg-primary' : 'bg-border')} />
+            ))}
           </View>
+        </View>
+      </Screen>
 
-          <View className="mt-5 flex-row items-center justify-center gap-1.5 opacity-60">
-            <Hand size={13} color={colors.muted} />
-            <Txt weight="medium" className="text-[11.5px] text-muted">
-              Auto-playing · tap anywhere to advance
-            </Txt>
-          </View>
-        </Screen>
-      </Pressable>
+      {/* Fixed action button — the rider taps to advance each step */}
+      <View className="absolute inset-x-0 bottom-0 border-t border-border bg-card px-5 pt-3" style={{ paddingBottom: insets.bottom + 12 }}>
+        <Button label={NEXT_LABEL[phase]} onPress={advance} rightIcon={<ArrowRight size={18} color="#fff" />} />
+      </View>
     </View>
   );
 }
@@ -171,7 +168,7 @@ function PhaseView({
   if (phase === 'return_open') {
     return (
       <View className="items-center">
-        <Txt weight="black" className="text-center text-[30px] text-brand-600">
+        <Txt weight="black" className="text-center text-[30px] text-primary">
           Slot {returnSlot} is open
         </Txt>
         <Txt weight="regular" className="mt-2 text-center text-[14px] text-muted">
@@ -179,7 +176,7 @@ function PhaseView({
         </Txt>
         {timerVisible && (
           <>
-            <Txt weight="black" className={cn('mt-5 text-[56px] tabular-nums', urgent ? 'text-danger' : 'text-ink')}>
+            <Txt weight="black" className={cn('mt-5 text-[56px] tabular-nums', urgent ? 'text-danger' : 'text-foreground')}>
               {mmss(remaining)}
             </Txt>
             <View className="w-[60%]">
@@ -187,15 +184,15 @@ function PhaseView({
             </View>
           </>
         )}
-        <View className="mt-6 w-full rounded-2xl bg-surface p-5">
-          {['Remove the battery from your vehicle.', 'Insert it into the opened slot.', 'Connect the cabinet connector.', 'Close the cabinet door.'].map((t, i) => (
+        <View className="mt-6 w-full rounded-2xl bg-card p-5" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
+          {['Remove the battery from your vehicle.', 'Insert it into the opened slot.', 'Connect the cabinet connector.'].map((t, i) => (
             <View key={i} className={cn('flex-row items-center', i > 0 && 'mt-3')}>
-              <View className="h-6 w-6 items-center justify-center rounded-full bg-brand-500">
-                <Txt weight="bold" className="text-[11px] text-white" style={{ color: '#fff' }}>
+              <View className="h-6 w-6 items-center justify-center rounded-full bg-primary">
+                <Txt weight="bold" className="text-[11px]" style={{ color: '#fff' }}>
                   {i + 1}
                 </Txt>
               </View>
-              <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-ink">
+              <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-foreground">
                 {t}
               </Txt>
             </View>
@@ -211,7 +208,7 @@ function PhaseView({
         tone="brand"
         icon={<ArrowDownToLine size={46} color={colors.brand} />}
         title="Battery deposited"
-        lines={[`Discharged battery detected in Slot ${returnSlot}.`, 'Now close the cabinet door to proceed.']}
+        lines={[`Discharged battery detected in Slot ${returnSlot}.`, 'Now close the cabinet door, then tap below.']}
       />
     );
   }
@@ -225,11 +222,8 @@ function PhaseView({
         <Txt weight="black" className="mt-6 text-center text-[24px] text-success">
           {phase === 'verifying' ? 'Verifying your battery' : 'Return confirmed'}
         </Txt>
-        <Txt weight="medium" className="mt-2 text-center text-[14px] text-ink">
-          {phase === 'verifying' ? 'The cabinet is checking the returned pack.' : 'Preparing a charged battery for you.'}
-        </Txt>
-        <Txt weight="regular" className="mt-1 text-center text-[12px] text-muted">
-          Please don’t leave this screen.
+        <Txt weight="medium" className="mt-2 text-center text-[14px] text-foreground">
+          {phase === 'verifying' ? 'The cabinet is checking the returned pack.' : 'A charged battery is ready for you.'}
         </Txt>
       </View>
     );
@@ -250,14 +244,14 @@ function PhaseView({
           </Txt>
         </View>
         <View className="mt-6 w-full rounded-2xl border border-success/20 bg-success-soft/40 p-5">
-          {['Open the output slot.', 'Remove the charged battery.', 'Disconnect the connector.', 'Close the output door.'].map((t, i) => (
+          {['Open the output slot.', 'Remove the charged battery.', 'Close the output door.'].map((t, i) => (
             <View key={i} className={cn('flex-row items-center', i > 0 && 'mt-3')}>
               <View className="h-6 w-6 items-center justify-center rounded-full bg-success">
-                <Txt weight="bold" className="text-[11px] text-white" style={{ color: '#fff' }}>
+                <Txt weight="bold" className="text-[11px]" style={{ color: '#fff' }}>
                   {i + 1}
                 </Txt>
               </View>
-              <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-ink">
+              <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-foreground">
                 {t}
               </Txt>
             </View>
@@ -273,7 +267,7 @@ function PhaseView({
       tone="success"
       icon={<ArrowUpFromLine size={46} color={colors.success} />}
       title="Battery collected"
-      lines={['Charged pack removed successfully.', 'Finishing your swap…']}
+      lines={['Charged pack removed successfully.', 'Tap below to finish your swap.']}
     />
   );
 }
@@ -284,14 +278,17 @@ function Centered({ tone, icon, title, lines }: { tone: 'brand' | 'success'; ico
       <View className={cn('h-28 w-28 items-center justify-center rounded-full', tone === 'brand' ? 'bg-brand-50' : 'bg-success-soft')}>
         {icon}
       </View>
-      <Txt weight="black" className="mt-6 text-center text-[26px] text-ink">
+      <Txt weight="black" className="mt-6 text-center text-[26px] text-foreground">
         {title}
       </Txt>
-      <View className="mt-4 w-full rounded-2xl bg-surface p-5">
+      <View className="mt-4 w-full rounded-2xl bg-card p-5" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
         {lines.map((l, i) => (
-          <Txt key={i} weight={i === lines.length - 1 ? 'bold' : 'semibold'} className={cn('text-center text-[14px]', i === lines.length - 1 ? 'text-brand-600' : 'text-ink', i > 0 && 'mt-1')}>
-            {l}
-          </Txt>
+          <View key={i} className={cn('flex-row items-center justify-center', i > 0 && 'mt-1')}>
+            {i === 0 && <DoorClosed size={16} color={colors.muted} style={{ marginRight: 8 }} />}
+            <Txt weight={i === lines.length - 1 ? 'bold' : 'semibold'} className={cn('text-center text-[14px]', i === lines.length - 1 ? 'text-primary' : 'text-foreground')}>
+              {l}
+            </Txt>
+          </View>
         ))}
       </View>
     </View>

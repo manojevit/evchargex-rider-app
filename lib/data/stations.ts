@@ -31,7 +31,26 @@ function chargedCount(slots: Slot[]): number {
   return slots.filter((s) => s.state === 'charged').length;
 }
 
-const raw: Omit<Station, 'charged' | 'slot_count'>[] = [
+// Representative photos (verified hotlinkable Unsplash URLs) — EV rides,
+// charging, and nearby facilities. Shown with a "representative" caption.
+const U = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=800&q=70`;
+const PHOTOS = {
+  charging: { uri: U('1593941707882-a5bba14938c7'), label: 'Charging bay' },
+  swapPoint: { uri: U('1617704548623-340376564e68'), label: 'Swap point' },
+  onRoad: { uri: U('1560958089-b8a1929cea89'), label: 'On the road' },
+  eBike: { uri: U('1558981403-c5f9899a28bc'), label: 'Electric rides' },
+  cafe: { uri: U('1606836576983-8b458e75221d'), label: 'Café next door' },
+  metro: { uri: U('1549924231-f129b911e442'), label: 'Metro nearby' },
+  street: { uri: U('1517732306149-e8f829eb588a'), label: 'In the neighbourhood' },
+};
+const IMAGE_SETS = [
+  [PHOTOS.swapPoint, PHOTOS.charging, PHOTOS.cafe, PHOTOS.street],
+  [PHOTOS.eBike, PHOTOS.charging, PHOTOS.metro, PHOTOS.onRoad],
+  [PHOTOS.onRoad, PHOTOS.swapPoint, PHOTOS.street, PHOTOS.cafe],
+  [PHOTOS.charging, PHOTOS.eBike, PHOTOS.metro, PHOTOS.swapPoint],
+];
+
+const raw: Omit<Station, 'charged' | 'slot_count' | 'images'>[] = [
   {
     id: 'st-01',
     code: 'EVIDEMO01',
@@ -154,10 +173,11 @@ const raw: Omit<Station, 'charged' | 'slot_count'>[] = [
   },
 ];
 
-export const STATIONS: Station[] = raw.map((s) => ({
+export const STATIONS: Station[] = raw.map((s, i) => ({
   ...s,
   slot_count: s.slots.length,
   charged: chargedCount(s.slots),
+  images: IMAGE_SETS[i % IMAGE_SETS.length],
 }));
 
 export function getStation(id: string): Station | undefined {

@@ -1,7 +1,6 @@
 import { Linking, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import {
   BatteryFull,
   BatteryWarning,
@@ -18,6 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { CabinetGrid } from '@/components/CabinetGrid';
+import { StationImageCarousel } from '@/components/StationImageCarousel';
 import { colors } from '@/lib/theme';
 import { getStation } from '@/lib/data/stations';
 
@@ -59,15 +59,10 @@ export default function StationDetail() {
       />
 
       <Screen contentClassName="px-5 pt-1" padBottom={150}>
-        {/* Banner */}
-        <LinearGradient colors={online ? ['#E6F4EC', '#DBEFE4'] : ['#FBE9E9', '#F7DEDE']} style={{ height: 144, alignItems: 'center', justifyContent: 'center', borderRadius: 26, marginBottom: 16 }}>
-          <View className="h-16 w-16 items-center justify-center rounded-2xl bg-white/70">
-            <Zap size={34} color={online ? colors.success : colors.danger} fill={online ? colors.success : colors.danger} strokeWidth={1.2} />
-          </View>
-          <Txt weight="medium" className="mt-2 text-[12px] text-muted">
-            Representative photo — not this station
-          </Txt>
-        </LinearGradient>
+        {/* Photos */}
+        <View className="mb-4">
+          <StationImageCarousel images={station.images} online={online} height={185} />
+        </View>
 
         <Txt weight="black" className="text-[22px] text-ink">
           {station.name}
@@ -94,22 +89,19 @@ export default function StationDetail() {
           </View>
         </View>
 
-        {/* Availability */}
-        <Txt weight="black" className="mt-6 text-[18px] text-ink">
-          Availability
-        </Txt>
+        {/* Availability — compact single row */}
+        <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
+          <AvailStat icon={<BatteryFull size={17} color={colors.success} />} value={online ? available : '—'} label="charged" />
+          <View className="h-6 w-px bg-border" />
+          <AvailStat icon={<BatteryWarning size={17} color={colors.warn} />} value={online ? empty : '—'} label="empty" />
+          <View className="h-6 w-px bg-border" />
+          <AvailStat icon={<CircleAlert size={17} color={colors.danger} />} value={online ? fault : '—'} label="fault" />
+        </View>
         {!online && (
-          <Txt weight="regular" className="mt-1 text-[13.5px] leading-5 text-muted">
-            This cabinet is not reporting, so its stock is unknown.
+          <Txt weight="regular" className="mt-2 text-[12.5px] text-muted">
+            This cabinet isn’t reporting, so its stock is unknown.
           </Txt>
         )}
-        <View className="mt-3 flex-row justify-between rounded-2xl bg-surface p-4" style={{ shadowColor: '#0B1420', shadowOpacity: 0.05, shadowRadius: 12, elevation: 1 }}>
-          <AvailStat icon={<BatteryFull size={20} color={colors.success} />} value={online ? available : '—'} label="available" />
-          <View className="w-px bg-line" />
-          <AvailStat icon={<BatteryWarning size={20} color={colors.warn} />} value={online ? empty : '—'} label="empty" />
-          <View className="w-px bg-line" />
-          <AvailStat icon={<CircleAlert size={20} color={colors.danger} />} value={online ? fault : '—'} label="fault" />
-        </View>
 
         {/* Cabinet */}
         <Txt weight="black" className="mt-6 text-[18px] text-ink">
@@ -163,9 +155,9 @@ export default function StationDetail() {
 
 function AvailStat({ icon, value, label }: { icon: React.ReactNode; value: number | string; label: string }) {
   return (
-    <View className="flex-1 items-center">
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-canvas">{icon}</View>
-      <Txt weight="black" className="mt-2 text-[18px] text-ink">
+    <View className="flex-row items-center gap-1.5">
+      {icon}
+      <Txt weight="black" className="text-[16px] text-foreground">
         {value}
       </Txt>
       <Txt weight="medium" className="text-[12px] text-muted">

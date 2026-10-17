@@ -38,6 +38,8 @@ export interface Station {
   slots: Slot[];
   /** Normalised 0-1 position for the stylised map (x = left→right, y = top→bottom). */
   map: { x: number; y: number };
+  /** Representative photos shown in the station carousel. */
+  images: { uri: string; label: string }[];
 }
 
 export type SwapStatus = 'completed' | 'cancelled' | 'failed';
