@@ -9,9 +9,11 @@ import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { colors, gradients } from '@/lib/theme';
 import { cn } from '@/lib/cn';
+import { useToast } from '@/lib/toast';
 import { SUPPORT } from '@/lib/data/account';
 
 export default function Support() {
+  const toast = useToast();
   const [open, setOpen] = useState<string | null>(SUPPORT.topics[0].id);
 
   return (
@@ -37,7 +39,10 @@ export default function Support() {
                 Call helpline
               </Txt>
             </Pressable>
-            <Pressable className="h-[50px] w-[50px] items-center justify-center rounded-2xl bg-white/15">
+            <Pressable
+              onPress={() => toast.show('Live chat is coming soon.')}
+              className="h-[50px] w-[50px] items-center justify-center rounded-2xl bg-white/15"
+            >
               <MessageCircle size={22} color="#fff" />
             </Pressable>
           </View>

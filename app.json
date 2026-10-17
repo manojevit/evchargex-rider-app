@@ -38,6 +38,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#1E63F0"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "EVCHARGEX uses the camera to scan the QR code on the battery-swap cabinet."
+        }
       ]
     ],
     "experiments": {

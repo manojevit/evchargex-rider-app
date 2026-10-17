@@ -2,6 +2,7 @@ import { Linking, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
+  BatteryCharging,
   BatteryFull,
   BatteryWarning,
   CircleAlert,
@@ -75,19 +76,50 @@ export default function StationDetail() {
         </View>
 
         <View className="mt-3 flex-row gap-2">
-          <View className="flex-row items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 border border-line">
+          <View className="flex-row items-center gap-1.5 rounded-full bg-card px-3 py-1.5 border border-border">
             <Clock size={13} color={colors.muted} />
-            <Txt weight="bold" className="text-[12px] text-ink">
+            <Txt weight="bold" className="text-[12px] text-foreground">
               {station.open_hours}
             </Txt>
           </View>
-          <View className="flex-row items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 border border-line">
+          <View className="flex-row items-center gap-1.5 rounded-full bg-card px-3 py-1.5 border border-border">
             <BatteryFull size={13} color={colors.muted} />
-            <Txt weight="bold" className="text-[12px] text-ink">
+            <Txt weight="bold" className="text-[12px] text-foreground">
               {station.slot_count} slots
             </Txt>
           </View>
         </View>
+
+        {/* Batteries ready to swap */}
+        {online ? (
+          <View className="mt-4 flex-row items-center rounded-2xl bg-success-soft p-4">
+            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-white/70">
+              <BatteryCharging size={24} color={colors.success} />
+            </View>
+            <View className="ml-3 flex-1">
+              <Txt weight="black" className="text-[20px] text-success-ink">
+                {available} {available === 1 ? 'battery' : 'batteries'} ready
+              </Txt>
+              <Txt weight="semibold" className="text-[12.5px] text-success-ink">
+                Charged packs you can swap right now
+              </Txt>
+            </View>
+          </View>
+        ) : (
+          <View className="mt-4 flex-row items-center rounded-2xl bg-danger-soft p-4">
+            <View className="h-12 w-12 items-center justify-center rounded-2xl bg-white/70">
+              <CircleAlert size={24} color={colors.danger} />
+            </View>
+            <View className="ml-3 flex-1">
+              <Txt weight="black" className="text-[16px] text-danger-ink">
+                Not reporting
+              </Txt>
+              <Txt weight="semibold" className="text-[12.5px] text-danger-ink">
+                Battery stock is unknown right now
+              </Txt>
+            </View>
+          </View>
+        )}
 
         {/* Availability — compact single row */}
         <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
@@ -97,11 +129,6 @@ export default function StationDetail() {
           <View className="h-6 w-px bg-border" />
           <AvailStat icon={<CircleAlert size={17} color={colors.danger} />} value={online ? fault : '—'} label="fault" />
         </View>
-        {!online && (
-          <Txt weight="regular" className="mt-2 text-[12.5px] text-muted">
-            This cabinet isn’t reporting, so its stock is unknown.
-          </Txt>
-        )}
 
         {/* Cabinet */}
         <Txt weight="black" className="mt-6 text-[18px] text-ink">
@@ -138,7 +165,18 @@ export default function StationDetail() {
           </Txt>
         )}
         <View className="flex-row gap-3">
-          <Button label="Directions" variant="outline" block={false} className="flex-1" leftIcon={<Navigation size={18} color={colors.brand} fill={colors.brand} />} />
+          <Button
+            label="Directions"
+            variant="outline"
+            block={false}
+            className="flex-1"
+            leftIcon={<Navigation size={18} color={colors.brand} fill={colors.brand} />}
+            onPress={() =>
+              Linking.openURL(
+                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${station.name}, ${station.address}`)}`,
+              )
+            }
+          />
           <View className="flex-1">
             <Button
               label="Proceed swap"

@@ -1,4 +1,5 @@
-import { View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, View } from 'react-native';
 import { MotiView } from '@/lib/motion';
 import { ArrowLeftRight, BatteryFull, BatteryLow, Clock, MapPin, ShieldCheck, SlidersHorizontal } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
@@ -13,24 +14,56 @@ import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
 import type { SwapHistoryRow } from '@/lib/data/types';
 
+type Filter = 'all' | 'completed' | 'cancelled';
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'cancelled', label: 'Cancelled' },
+];
+
 export default function History() {
   const { account } = useStore();
-  const rows = account.history;
+  const [filter, setFilter] = useState<Filter>('all');
+  const [showFilters, setShowFilters] = useState(false);
+
+  const rows = useMemo(() => {
+    if (filter === 'all') return account.history;
+    if (filter === 'completed') return account.history.filter((r) => r.status === 'completed');
+    return account.history.filter((r) => r.status !== 'completed');
+  }, [account.history, filter]);
 
   return (
-    <View className="flex-1 bg-canvas">
+    <View className="flex-1 bg-background">
       <AppBar
         title="Swap history"
         back
         right={
-          <View className="mr-1 h-10 flex-row items-center gap-1.5 rounded-xl border border-line bg-surface px-3">
-            <SlidersHorizontal size={15} color={colors.ink} />
-            <Txt weight="bold" className="text-[12px] text-ink">
+          <Pressable
+            onPress={() => setShowFilters((v) => !v)}
+            className={cn('mr-1 h-10 flex-row items-center gap-1.5 rounded-xl border px-3', showFilters || filter !== 'all' ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}
+          >
+            <SlidersHorizontal size={15} color={showFilters || filter !== 'all' ? colors.brand : colors.ink} />
+            <Txt weight="bold" className={cn('text-[12px]', showFilters || filter !== 'all' ? 'text-brand-600' : 'text-ink')}>
               Filter
             </Txt>
-          </View>
+          </Pressable>
         }
       />
+      {showFilters && (
+        <View className="flex-row gap-2 px-5 pb-1 pt-1">
+          {FILTERS.map((f) => (
+            <Pressable
+              key={f.key}
+              onPress={() => setFilter(f.key)}
+              className={cn('rounded-full border px-3.5 py-1.5', filter === f.key ? 'border-brand-500 bg-brand-500' : 'border-border bg-card')}
+            >
+              <Txt weight="bold" className={cn('text-[12.5px]', filter === f.key ? 'text-white' : 'text-muted')} style={filter === f.key ? { color: '#fff' } : undefined}>
+                {f.label}
+              </Txt>
+            </Pressable>
+          ))}
+        </View>
+      )}
       <Screen contentClassName="px-5 pt-1">
         <Txt weight="regular" className="mb-3 text-[13px] text-muted">
           View your past battery swap transactions

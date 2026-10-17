@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from '@/lib/motion';
 import {
@@ -24,6 +24,7 @@ import { IconTile } from '@/components/ui/IconTile';
 import { colors, gradients } from '@/lib/theme';
 import { rupees } from '@/lib/format';
 import { useStore } from '@/lib/store';
+import { useToast } from '@/lib/toast';
 import { PLAN } from '@/lib/data/account';
 
 export default function PlanScreen() {
@@ -42,6 +43,7 @@ export default function PlanScreen() {
 
 function ActivePlan() {
   const plan = PLAN;
+  const toast = useToast();
   return (
     <>
       {/* Hero */}
@@ -170,23 +172,38 @@ function ActivePlan() {
       </Card>
 
       <View className="mt-4">
-        <Button label="Change plan" rightIcon={<Repeat size={18} color="#fff" />} />
+        <Button
+          label="Change plan"
+          rightIcon={<Repeat size={18} color="#fff" />}
+          onPress={() => toast.show('Plan change requested — our team will reach out.', 'success')}
+        />
       </View>
       <View className="mt-3">
-        <Button label="Download invoices / receipts" variant="secondary" leftIcon={<FileText size={18} color={colors.brand} />} />
+        <Button
+          label="Download invoices / receipts"
+          variant="secondary"
+          leftIcon={<FileText size={18} color={colors.brand} />}
+          onPress={() => toast.show('Invoice downloaded (demo).', 'success')}
+        />
       </View>
-      <View className="mt-4 flex-row items-center justify-center gap-1.5">
+      <Pressable
+        className="mt-4 flex-row items-center justify-center gap-1.5"
+        hitSlop={8}
+        onPress={() => toast.show('Our billing team will contact you shortly.')}
+      >
         <Headset size={15} color={colors.brand} />
         <Txt weight="bold" className="text-[13px] text-brand-600">
           Need help with commercial fleet billing?
         </Txt>
-      </View>
+      </Pressable>
     </>
   );
 }
 
 function NoPlan() {
   const plan = PLAN;
+  const toast = useToast();
+  const { setPersona } = useStore();
   return (
     <>
       <Card className="items-center py-8">
@@ -234,10 +251,16 @@ function NoPlan() {
       </MotiView>
 
       <View className="mt-4">
-        <Button label="Subscribe now" />
+        <Button
+          label="Subscribe now"
+          onPress={() => {
+            setPersona('rich');
+            toast.show('Unlimited Monthly activated 🎉', 'success');
+          }}
+        />
       </View>
       <Txt weight="medium" className="mt-3 text-center text-[12.5px] text-muted">
-        Tip: flip to the active account from Menu → Settings to see the full plan.
+        Tip: you can also flip accounts from Menu → Settings.
       </Txt>
     </>
   );

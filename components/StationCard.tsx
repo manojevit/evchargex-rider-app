@@ -1,21 +1,35 @@
-import { Pressable, View } from 'react-native';
+import { useState } from 'react';
+import { Image, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { BatteryFull, ChevronRight, MapPin, Navigation } from 'lucide-react-native';
+import { BatteryFull, ChevronRight, MapPin } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Badge } from '@/components/ui/Badge';
-import { IconTile } from '@/components/ui/IconTile';
 import { colors } from '@/lib/theme';
 import { cardShadow } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import type { Station } from '@/lib/data/types';
 
-/** A stylised station glyph tile (we have no real photos in the demo). */
-function StationGlyph({ online, size = 'md' }: { online: boolean; size?: 'md' | 'lg' }) {
-  const box = size === 'lg' ? 'h-[72px] w-[72px]' : 'h-14 w-14';
+/** Station photo thumbnail, with a branded battery-glyph fallback. */
+function StationThumb({ station, size, online }: { station: Station; size: number; online: boolean }) {
+  const [err, setErr] = useState(false);
+  const uri = station.images?.[0]?.uri;
+  if (!uri || err) {
+    return (
+      <View
+        className={cn('items-center justify-center', online ? 'bg-success-soft' : 'bg-canvas')}
+        style={{ width: size, height: size, borderRadius: 18 }}
+      >
+        <BatteryFull size={size > 60 ? 32 : 26} color={online ? colors.success : colors.faint} strokeWidth={2} />
+      </View>
+    );
+  }
   return (
-    <View className={cn('items-center justify-center rounded-2xl', box, online ? 'bg-success-soft' : 'bg-canvas')}>
-      <BatteryFull size={size === 'lg' ? 32 : 26} color={online ? colors.success : colors.faint} strokeWidth={2} />
-    </View>
+    <Image
+      source={{ uri }}
+      style={{ width: size, height: size, borderRadius: 18, backgroundColor: online ? '#E6F4EC' : '#F2F5F9' }}
+      resizeMode="cover"
+      onError={() => setErr(true)}
+    />
   );
 }
 
@@ -31,10 +45,10 @@ export function StationCard({ station }: { station: Station }) {
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
       <View className="flex-row items-center">
-        <StationGlyph online={online} size="lg" />
-        <View className="ml-3 flex-1">
+        <StationThumb station={station} size={72} online={online} />
+        <View className="ml-3.5 flex-1">
           <View className="flex-row items-center justify-between">
-            <Txt weight="extrabold" className="text-[17px] text-ink">
+            <Txt weight="extrabold" className="text-[17px] text-foreground">
               {station.code}
             </Txt>
             <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
@@ -76,10 +90,10 @@ export function StationRowCompact({ station }: { station: Station }) {
   return (
     <Pressable
       onPress={() => router.push(`/station/${station.id}`)}
-      className="mb-2.5 flex-row items-center rounded-2xl border border-line bg-surface p-3"
+      className="mb-2.5 flex-row items-center rounded-2xl border border-border bg-surface p-3"
       style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
     >
-      <StationGlyph online={online} />
+      <StationThumb station={station} size={56} online={online} />
       <View className="ml-3 flex-1">
         <View className="flex-row items-center gap-2">
           <Txt weight="bold" className="text-[15px] text-ink">
@@ -110,5 +124,3 @@ export function StationRowCompact({ station }: { station: Station }) {
     </Pressable>
   );
 }
-
-export { StationGlyph };

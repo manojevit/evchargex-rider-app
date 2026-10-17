@@ -16,6 +16,7 @@ import {
   Inter_900Black,
 } from '@expo-google-fonts/inter';
 import { StoreProvider } from '@/lib/store';
+import { ToastProvider } from '@/lib/toast';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -39,6 +40,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <StoreProvider>
+          <ToastProvider>
           <StatusBar style="dark" />
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#F2F5F9' } }}>
             <Stack.Screen name="index" />
@@ -56,6 +58,7 @@ export default function RootLayout() {
             <Stack.Screen name="support" />
             <Stack.Screen name="settings" />
           </Stack>
+          </ToastProvider>
         </StoreProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
