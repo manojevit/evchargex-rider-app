@@ -51,7 +51,6 @@ export default function StationDetail() {
       <AppBar
         title={station.name}
         back
-        bell
         right={
           <View className="mr-2">
             <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
@@ -149,9 +148,6 @@ export default function StationDetail() {
             Station helpline · {station.helpline}
           </Txt>
         </Pressable>
-        <Txt weight="medium" className="mt-2 text-center text-[12px] text-muted">
-          Answered 24 x 7
-        </Txt>
       </Screen>
 
       {/* Bottom action bar */}

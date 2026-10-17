@@ -19,7 +19,7 @@ export const RIDER: Rider = {
 const VEHICLE: Vehicle = {
   plate: 'HR 26 DK 8055',
   model: 'Lectrix LXS',
-  battery_pct: 68,
+  battery_pct: 19,
   range_km: 45,
 };
 

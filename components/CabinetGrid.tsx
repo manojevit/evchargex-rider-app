@@ -27,20 +27,27 @@ function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; 
     >
       {highlight && <View className="absolute -top-1 left-4 right-4 h-1 rounded-full bg-brand-500" />}
       <View className="flex-row items-start justify-between">
-        <BatteryRing soc={slot.soc} state={slot.state} size={50} />
+        <BatteryRing soc={slot.soc} state={slot.state} size={48} />
         <View className={cn('h-7 w-7 items-center justify-center rounded-lg', empty ? 'bg-canvas' : highlight || open ? 'bg-brand-50' : 'bg-canvas')}>
           {open ? <LockOpen size={14} color={colors.brand} /> : <Lock size={14} color={empty ? colors.faint : colors.muted} />}
         </View>
       </View>
-      <View className="mt-2 flex-row items-center justify-between">
-        <Txt weight="semibold" className="text-[10.5px] text-muted" numberOfLines={1} style={{ flex: 1 }}>
-          {slot.serial ?? '—'}
-        </Txt>
-        <View className={cn('ml-1 h-2 w-2 rounded-full', DOT[slot.state])} />
-      </View>
-      <Txt weight="bold" className="mt-0.5 text-[10px] text-faint">
-        Slot {slot.slot_number}
+      {/* Full battery ID — shrinks to fit the card */}
+      <Txt
+        weight="bold"
+        className="mt-2 text-[11px] text-foreground"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.55}
+      >
+        {slot.serial ?? '—'}
       </Txt>
+      <View className="mt-0.5 flex-row items-center justify-between">
+        <Txt weight="bold" className="text-[10px] text-faint">
+          Slot {slot.slot_number}
+        </Txt>
+        <View className={cn('h-2 w-2 rounded-full', DOT[slot.state])} />
+      </View>
     </MotiView>
   );
 }

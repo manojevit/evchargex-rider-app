@@ -8,7 +8,6 @@ import {
   LogOut,
   Settings,
   Clock,
-  Star,
   Wallet,
 } from 'lucide-react-native';
 import { Logo } from '@/components/Logo';
@@ -33,9 +32,8 @@ export default function Menu() {
     badge?: number;
   }[] = [
     { icon: <Clock size={22} color={colors.brand} />, tone: 'brand', title: 'Swap history', sub: 'View your past swaps', href: '/history' },
+    { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription & plan', sub: 'Your plan, benefits & billing', href: '/(tabs)/plan' },
     { icon: <Wallet size={22} color={colors.success} />, tone: 'success', title: 'Wallet', sub: 'Balance & transactions', href: '/wallet' },
-    { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription', sub: 'Manage your monthly plan', href: '/(tabs)/plan' },
-    { icon: <Star size={22} color={colors.warn} />, tone: 'warn', title: 'Your plan', sub: 'Plan details and benefits', href: '/(tabs)/plan' },
     { icon: <Bell size={22} color={colors.danger} />, tone: 'danger', title: 'Alerts', sub: 'Manage your notifications', href: '/alerts', badge: unreadAlerts },
     { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
     { icon: <HelpCircle size={22} color={colors.brand} />, tone: 'brand', title: 'Help', sub: 'Get support and FAQs', href: '/support' },

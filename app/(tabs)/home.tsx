@@ -1,7 +1,7 @@
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Bell, Bike, ChevronRight, ShieldCheck, Zap } from 'lucide-react-native';
+import { BatteryLow, Bell, Bike, ChevronRight, PiggyBank, Repeat, ShieldCheck, Zap } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -10,6 +10,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Screen } from '@/components/ui/Screen';
 import { StationCard, StationRowCompact } from '@/components/StationCard';
 import { colors } from '@/lib/theme';
+import { rupees } from '@/lib/format';
 import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
 import { STATIONS } from '@/lib/data/stations';
@@ -72,8 +73,8 @@ export default function Home() {
                 <Txt weight="semibold" className="text-[13px] text-muted">
                   {vehicle.plate}
                 </Txt>
-                <Txt weight="black" className={cn('text-[16px]', lowBattery ? 'text-warn' : 'text-foreground')}>
-                  {vehicle.battery_pct}% · ~{vehicle.range_km} km
+                <Txt weight="black" className={cn('text-[17px]', lowBattery ? 'text-warn' : 'text-foreground')}>
+                  {vehicle.battery_pct}%
                 </Txt>
               </View>
               <ProgressBar value={vehicle.battery_pct} tone={lowBattery ? 'warn' : 'success'} className="mt-1.5" height={6} />
@@ -95,6 +96,33 @@ export default function Home() {
           </Card>
         )}
 
+        {/* Smart nudge — appears when the pack is running low */}
+        {vehicle && lowBattery && hero && hero.status === 'online' && (
+          <Pressable
+            onPress={() => router.push(`/swap/preflight?station=${hero.id}`)}
+            className="mt-3 flex-row items-center rounded-2xl bg-warn-soft p-4"
+            style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
+          >
+            <View className="h-11 w-11 items-center justify-center rounded-2xl bg-white/70">
+              <BatteryLow size={22} color={colors.warn} />
+            </View>
+            <View className="ml-3 flex-1">
+              <Txt weight="black" className="text-[14.5px] text-warn-ink">
+                Battery low — swap soon
+              </Txt>
+              <Txt weight="semibold" className="text-[12.5px] text-warn-ink">
+                Nearest: {hero.code} · {hero.distance_km} km away
+              </Txt>
+            </View>
+            <View className="ml-2 flex-row items-center gap-1 rounded-xl bg-warn px-3 py-2">
+              <Txt weight="bold" className="text-[12.5px] text-white" style={{ color: '#fff' }}>
+                Swap now
+              </Txt>
+              <ChevronRight size={15} color="#fff" />
+            </View>
+          </Pressable>
+        )}
+
         {/* Plan status — single slim pill row */}
         <Pressable onPress={() => router.push('/(tabs)/plan')} className="mt-3 flex-row items-center justify-between rounded-2xl border border-border/70 bg-card px-4 py-3" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 }}>
           <View className="flex-row items-center gap-2.5">
@@ -108,6 +136,37 @@ export default function Home() {
             <ChevronRight size={18} color={colors.faint} />
           </View>
         </Pressable>
+
+        {/* This-month stats */}
+        {plan && (
+          <View className="mt-3 flex-row gap-3">
+            <Card className="flex-1">
+              <View className="flex-row items-center justify-between">
+                <Txt weight="bold" className="text-[11px] uppercase tracking-wide text-muted">
+                  This month
+                </Txt>
+                <Repeat size={16} color={colors.brand} />
+              </View>
+              <Txt weight="black" className="mt-1.5 text-[22px] text-foreground">
+                {plan.this_month_swaps} swaps
+              </Txt>
+            </Card>
+            <Card className="flex-1">
+              <View className="flex-row items-center justify-between">
+                <Txt weight="bold" className="text-[11px] uppercase tracking-wide text-muted">
+                  Saved
+                </Txt>
+                <PiggyBank size={16} color={colors.success} />
+              </View>
+              <Txt weight="black" className="mt-1.5 text-[22px] text-success">
+                {rupees(plan.saved_rupees)}
+              </Txt>
+              <Txt weight="medium" className="text-[11px] text-muted">
+                vs retail
+              </Txt>
+            </Card>
+          </View>
+        )}
 
         {/* Hero: nearest stations */}
         <View className="mb-3 mt-7 flex-row items-end justify-between">
