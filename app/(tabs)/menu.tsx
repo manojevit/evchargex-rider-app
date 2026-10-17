@@ -1,0 +1,130 @@
+import { Pressable, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter, type Href } from 'expo-router';
+import {
+  Bell,
+  ChevronRight,
+  CreditCard,
+  HelpCircle,
+  LogOut,
+  Settings,
+  Clock,
+  Star,
+  Wallet,
+  Zap,
+} from 'lucide-react-native';
+import { Txt } from '@/components/ui/Txt';
+import { Card } from '@/components/ui/Card';
+import { AppBar } from '@/components/ui/AppBar';
+import { Screen } from '@/components/ui/Screen';
+import { IconTile } from '@/components/ui/IconTile';
+import { colors } from '@/lib/theme';
+import { useStore } from '@/lib/store';
+
+export default function Menu() {
+  const router = useRouter();
+  const { rider, signOut, unreadAlerts } = useStore();
+
+  const items: {
+    icon: React.ReactNode;
+    tone: 'brand' | 'success' | 'warn' | 'danger' | 'violet' | 'info';
+    title: string;
+    sub: string;
+    href: Href;
+    badge?: number;
+  }[] = [
+    { icon: <Clock size={22} color={colors.brand} />, tone: 'brand', title: 'Swap history', sub: 'View your past swaps', href: '/history' },
+    { icon: <Wallet size={22} color={colors.success} />, tone: 'success', title: 'Wallet', sub: 'Balance & transactions', href: '/wallet' },
+    { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription', sub: 'Manage your monthly plan', href: '/(tabs)/plan' },
+    { icon: <Star size={22} color={colors.warn} />, tone: 'warn', title: 'Your plan', sub: 'Plan details and benefits', href: '/(tabs)/plan' },
+    { icon: <Bell size={22} color={colors.danger} />, tone: 'danger', title: 'Alerts', sub: 'Manage your notifications', href: '/alerts', badge: unreadAlerts },
+    { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
+    { icon: <HelpCircle size={22} color={colors.brand} />, tone: 'brand', title: 'Help', sub: 'Get support and FAQs', href: '/support' },
+  ];
+
+  return (
+    <View className="flex-1 bg-canvas">
+      <AppBar large title="Menu" bell />
+      <Screen contentClassName="px-5 pt-1">
+        {/* Profile */}
+        <LinearGradient colors={['#EAF1FF', '#DCE8FF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="flex-row items-center rounded-2xl p-4">
+          <View className="h-14 w-14 items-center justify-center rounded-full bg-brand-100">
+            <Txt weight="black" className="text-[22px] text-brand-600">
+              {rider.avatar_letter}
+            </Txt>
+          </View>
+          <View className="ml-3.5 flex-1">
+            <Txt weight="extrabold" className="text-[19px] text-ink">
+              {rider.name}
+            </Txt>
+            <Txt weight="medium" className="text-[13px] text-muted">
+              {rider.phone}
+            </Txt>
+          </View>
+          <ChevronRight size={22} color={colors.muted} />
+        </LinearGradient>
+
+        {/* List */}
+        <Card className="mt-4 p-0">
+          {items.map((it, i) => (
+            <Pressable
+              key={it.title}
+              onPress={() => router.push(it.href)}
+              className="flex-row items-center px-4 py-3.5"
+              style={({ pressed }) => (pressed ? { backgroundColor: '#F7F9FC' } : undefined)}
+            >
+              <IconTile tone={it.tone}>{it.icon}</IconTile>
+              <View className="ml-3 flex-1">
+                <Txt weight="bold" className="text-[15.5px] text-ink">
+                  {it.title}
+                </Txt>
+                <Txt weight="medium" className="text-[12.5px] text-muted">
+                  {it.sub}
+                </Txt>
+              </View>
+              {it.badge ? (
+                <View className="mr-2 min-w-[20px] items-center rounded-full bg-danger px-1.5 py-0.5">
+                  <Txt weight="bold" className="text-[11px] text-white" style={{ color: '#fff' }}>
+                    {it.badge}
+                  </Txt>
+                </View>
+              ) : null}
+              <ChevronRight size={20} color={colors.faint} />
+              {i < items.length - 1 && <View className="absolute bottom-0 left-[68px] right-4 h-px bg-line" />}
+            </Pressable>
+          ))}
+        </Card>
+
+        {/* Log out */}
+        <Pressable
+          onPress={() => {
+            signOut();
+            router.replace('/(auth)/login');
+          }}
+          className="mt-4 flex-row items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft/50 py-4"
+        >
+          <LogOut size={18} color={colors.danger} />
+          <Txt weight="bold" className="text-[15px] text-danger">
+            Log out
+          </Txt>
+        </Pressable>
+
+        {/* Brand card */}
+        <View className="mt-4 overflow-hidden rounded-2xl bg-[#0B1420] p-5">
+          <View className="flex-row items-center justify-center gap-2">
+            <Zap size={20} color="#fff" fill="#3B82F6" strokeWidth={1.5} />
+            <Txt weight="black" className="text-[20px] tracking-wide text-white" style={{ color: '#fff' }}>
+              EVCHARGEX
+            </Txt>
+          </View>
+          <Txt weight="medium" className="mt-1 text-center text-[11px] tracking-[2px] text-white/60" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            ELECTRIFYING LAST-MILE MOBILITY
+          </Txt>
+        </View>
+        <Txt weight="regular" className="mt-3 text-center text-[11px] text-faint">
+          Version 1.0.0 · Demo build
+        </Txt>
+      </Screen>
+    </View>
+  );
+}
