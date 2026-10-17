@@ -1,83 +1,41 @@
-import { View } from 'react-native';
-import { Zap } from 'lucide-react-native';
-import { Txt } from '@/components/ui/Txt';
-import { colors } from '@/lib/theme';
+import { Image } from 'react-native';
+import logoWhite from '../assets/brand/logo-white.png';
+import logoInk from '../assets/brand/logo-ink.png';
 
-type Tone = 'dark' | 'light'; // dark = for light backgrounds, light = for dark/brand backgrounds
-type Variant = 'mark' | 'row' | 'stack';
+/** Aspect ratio of the trimmed EVCHARGEX lockup (wordmark + tagline). */
+const LOGO_ASPECT = 3230 / 470;
 
-const MARK_SIZE = { sm: 36, md: 48, lg: 64 } as const;
-const BOLT_SIZE = { sm: 20, md: 28, lg: 38 } as const;
-const WORD_SIZE = { sm: 16, md: 20, lg: 26 } as const;
+const WIDTHS = { sm: 168, md: 208, lg: 272 } as const;
 
-/** The EVCHARGEX logo — a lightning mark plus the wordmark. */
+type Tone = 'dark' | 'light'; // dark = for light backgrounds (ink), light = for dark/brand backgrounds (white)
+
+/**
+ * The official EVCHARGEX logo. `tone="light"` is the white version (for the
+ * blue splash and the dark menu card); `tone="dark"` is the ink version (for
+ * light backgrounds like login and onboarding). The tagline is part of the art.
+ */
 export function Logo({
-  variant = 'row',
   tone = 'dark',
   size = 'md',
-  tagline = false,
+  width,
+  // kept for call-site compatibility; the lockup already includes the tagline
+  variant,
+  tagline,
 }: {
-  variant?: Variant;
   tone?: Tone;
-  size?: keyof typeof MARK_SIZE;
+  size?: keyof typeof WIDTHS;
+  width?: number;
+  variant?: 'mark' | 'row' | 'stack';
   tagline?: boolean;
 }) {
-  const onLight = tone === 'dark';
-  const markBg = onLight ? colors.brand : '#FFFFFF';
-  const boltColor = onLight ? '#FFFFFF' : colors.brand;
-  const wordColor = onLight ? colors.ink : '#FFFFFF';
-  const taglineColor = onLight ? colors.muted : 'rgba(255,255,255,0.75)';
-
-  const mark = (
-    <View
-      style={{
-        width: MARK_SIZE[size],
-        height: MARK_SIZE[size],
-        borderRadius: MARK_SIZE[size] * 0.3,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: markBg,
-      }}
-    >
-      <Zap size={BOLT_SIZE[size]} color={boltColor} fill={boltColor} strokeWidth={1.5} />
-    </View>
-  );
-
-  const word = (
-    <Txt weight="black" style={{ color: wordColor, letterSpacing: 0.5, fontSize: WORD_SIZE[size] }}>
-      EVCHARGEX
-    </Txt>
-  );
-
-  if (variant === 'mark') return mark;
-
-  if (variant === 'stack') {
-    return (
-      <View style={{ alignItems: 'center' }}>
-        {mark}
-        <View style={{ height: 16 }} />
-        {word}
-        {tagline && (
-          <Txt weight="medium" style={{ color: taglineColor, fontSize: 11, letterSpacing: 2, marginTop: 6 }}>
-            ELECTRIFYING LAST-MILE MOBILITY
-          </Txt>
-        )}
-      </View>
-    );
-  }
-
-  // row
+  void variant;
+  void tagline;
+  const w = width ?? WIDTHS[size];
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 10 }}>
-      {mark}
-      <View>
-        {word}
-        {tagline && (
-          <Txt weight="medium" style={{ color: taglineColor, fontSize: 9, letterSpacing: 1.5, marginTop: 2 }}>
-            ELECTRIFYING LAST-MILE MOBILITY
-          </Txt>
-        )}
-      </View>
-    </View>
+    <Image
+      source={tone === 'light' ? logoWhite : logoInk}
+      style={{ width: w, height: w / LOGO_ASPECT }}
+      resizeMode="contain"
+    />
   );
 }
