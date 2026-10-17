@@ -1,22 +1,36 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { MotiView } from '@/lib/motion';
-import { AlertTriangle, Bell, Info } from 'lucide-react-native';
+import { AlertTriangle, Bell, CheckCircle2, Info } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
-import { colors } from '@/lib/theme';
+import { cardShadow, colors } from '@/lib/theme';
 import { timeOnly } from '@/lib/format';
 import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
 import type { AppAlert } from '@/lib/data/types';
 
-const ACCENT: Record<AppAlert['severity'], string> = {
-  warn: 'bg-warn',
-  danger: 'bg-danger',
-  info: 'bg-info',
+const ICON_BG: Record<AppAlert['severity'], string> = {
+  success: 'bg-success-soft',
+  warn: 'bg-warn-soft',
+  danger: 'bg-danger-soft',
+  info: 'bg-info-soft',
 };
+const ICON_COLOR: Record<AppAlert['severity'], string> = {
+  success: colors.success,
+  warn: colors.warn,
+  danger: colors.danger,
+  info: colors.info,
+};
+
+function AlertIcon({ severity }: { severity: AppAlert['severity'] }) {
+  const color = ICON_COLOR[severity];
+  if (severity === 'success') return <CheckCircle2 size={20} color={color} />;
+  if (severity === 'info') return <Info size={20} color={color} />;
+  return <AlertTriangle size={20} color={color} />;
+}
 
 export default function Alerts() {
   const { account, unreadAlerts, markAllAlertsRead, markAlertRead } = useStore();
@@ -59,37 +73,31 @@ export default function Alerts() {
           </Card>
         ) : (
           list.map((a, i) => (
-            <MotiView key={a.id} from={{ opacity: 0, translateX: -10 }} animate={{ opacity: 1, translateX: 0 }} transition={{ delay: i * 50 }}>
-              <Pressable onPress={() => markAlertRead(a.id)} className="mb-3 overflow-hidden rounded-2xl bg-surface" style={{ shadowColor: '#0B1420', shadowOpacity: 0.05, shadowRadius: 12, elevation: 1 }}>
-                <View className="flex-row">
-                  <View className={cn('w-1.5', ACCENT[a.severity])} />
-                  <View className="flex-1 p-4">
-                    <View className="flex-row items-start">
-                      <View className={cn('h-10 w-10 items-center justify-center rounded-xl', a.severity === 'info' ? 'bg-info-soft' : a.severity === 'warn' ? 'bg-warn-soft' : 'bg-danger-soft')}>
-                        {a.severity === 'info' ? (
-                          <Info size={20} color={colors.info} />
-                        ) : (
-                          <AlertTriangle size={20} color={a.severity === 'warn' ? colors.warn : colors.danger} />
-                        )}
-                      </View>
-                      <View className="ml-3 flex-1">
-                        <View className="flex-row items-start justify-between">
-                          <Txt weight="bold" className="flex-1 pr-2 text-[15px] text-ink">
-                            {a.title}
-                          </Txt>
-                          <View className="flex-row items-center gap-1.5">
-                            <Txt weight="medium" className="text-[11.5px] text-muted">
-                              {timeOnly(a.at)}
-                            </Txt>
-                            {!a.read && <View className="h-2 w-2 rounded-full bg-brand-500" />}
-                          </View>
-                        </View>
-                        <Txt weight="regular" className="mt-1 text-[13px] leading-5 text-muted">
-                          {a.body}
-                        </Txt>
-                      </View>
-                    </View>
+            <MotiView key={a.id} from={{ opacity: 0, translateY: 8 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: i * 50 }}>
+              <Pressable
+                onPress={() => markAlertRead(a.id)}
+                className={cn(
+                  'mb-3 flex-row items-start rounded-2xl border bg-card p-4',
+                  a.read ? 'border-border/70' : 'border-brand-200',
+                )}
+                style={cardShadow}
+              >
+                <View className={cn('h-11 w-11 items-center justify-center rounded-2xl', ICON_BG[a.severity])}>
+                  <AlertIcon severity={a.severity} />
+                </View>
+                <View className="ml-3 flex-1">
+                  <View className="flex-row items-center justify-between">
+                    <Txt weight="bold" className="flex-1 pr-2 text-[15px] text-foreground" numberOfLines={1}>
+                      {a.title}
+                    </Txt>
+                    {!a.read && <View className="h-2.5 w-2.5 rounded-full bg-brand-500" />}
                   </View>
+                  <Txt weight="regular" className="mt-1 text-[13px] leading-5 text-muted" numberOfLines={3}>
+                    {a.body}
+                  </Txt>
+                  <Txt weight="medium" className="mt-1.5 text-[11.5px] text-faint">
+                    {timeOnly(a.at)}
+                  </Txt>
                 </View>
               </Pressable>
             </MotiView>

@@ -33,7 +33,7 @@ export default function Wallet() {
       <Screen contentClassName="px-5 pt-1">
         {/* Balance hero */}
         <MotiView from={{ opacity: 0, translateY: 12 }} animate={{ opacity: 1, translateY: 0 }}>
-          <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="overflow-hidden rounded-3xl p-5">
+          <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 28, padding: 22, overflow: 'hidden' }}>
             <View className="flex-row items-center gap-2">
               <WalletIcon size={18} color="rgba(255,255,255,0.9)" />
               <Txt weight="semibold" className="text-[13px] text-white" style={{ color: 'rgba(255,255,255,0.9)' }}>

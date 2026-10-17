@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 
-const LEN = 4;
-const DEMO_OTP = '1234';
+const LEN = 6;
+const DEMO_OTP = '123456';
 
 export default function Otp() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function Otp() {
       </MotiView>
 
       {/* Boxes */}
-      <Pressable onPress={() => inputRef.current?.focus()} className="mt-10 flex-row justify-between">
+      <Pressable onPress={() => inputRef.current?.focus()} className="mt-10 flex-row gap-2">
         {Array.from({ length: LEN }).map((_, i) => {
           const char = code[i];
           const active = i === code.length;
@@ -59,11 +59,11 @@ export default function Otp() {
             <View
               key={i}
               className={cn(
-                'h-16 w-16 items-center justify-center rounded-2xl border bg-surface',
-                char ? 'border-brand-500' : active ? 'border-brand-300' : 'border-line',
+                'h-[58px] flex-1 items-center justify-center rounded-xl border-2 bg-card',
+                char ? 'border-brand-500' : active ? 'border-brand-300' : 'border-border',
               )}
             >
-              <Txt weight="black" className="text-[26px] text-ink">
+              <Txt weight="black" className="text-[22px] text-foreground">
                 {char ?? ''}
               </Txt>
             </View>

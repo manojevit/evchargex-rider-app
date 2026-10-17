@@ -36,7 +36,7 @@ export default function Scan() {
     <View className="flex-1 bg-[#0B1420]">
       <StatusBar style="light" />
       {/* Simulated camera backdrop */}
-      <LinearGradient colors={['#1B2430', '#0B1420']} className="absolute inset-0" />
+      <LinearGradient colors={['#1B2430', '#0B1420']} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
 
       <View style={{ paddingTop: insets.top + 8 }} className="flex-row items-center justify-between px-5">
         <Pressable onPress={() => router.back()} hitSlop={10} className="h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
@@ -64,7 +64,7 @@ export default function Scan() {
                 transition={{ type: 'timing', duration: 1600, loop: true, repeatReverse: true }}
                 className="absolute h-0.5 w-[80%]"
               >
-                <LinearGradient colors={['transparent', '#3B82F6', 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} className="h-full w-full" />
+                <LinearGradient colors={['transparent', '#3B82F6', 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ height: '100%', width: '100%' }} />
               </MotiView>
               <QrCode size={64} color="rgba(255,255,255,0.85)" strokeWidth={1.4} />
               <Txt weight="medium" className="mt-4 text-[14px] text-white/80" style={{ color: 'rgba(255,255,255,0.8)' }}>

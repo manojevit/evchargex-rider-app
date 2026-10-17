@@ -24,7 +24,7 @@ import { useStore } from '@/lib/store';
 
 export default function Settings() {
   const router = useRouter();
-  const { rider, persona, togglePersona } = useStore();
+  const { persona, setPersona } = useStore();
   const [push, setPush] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
 
@@ -57,10 +57,10 @@ export default function Settings() {
           </View>
 
           <View className="mt-4 flex-row gap-2.5">
-            <Pressable className="flex-1" onPress={() => !rich || togglePersona()}>
-              <View className={cn('items-center rounded-2xl border-2 p-3', rich ? 'border-brand-500 bg-brand-50' : 'border-line bg-surface')}>
-                <BatteryCharging size={22} color={rich ? colors.brand : colors.faint} />
-                <Txt weight="bold" className={cn('mt-1.5 text-[13px]', rich ? 'text-brand-700' : 'text-muted')}>
+            <Pressable className="flex-1" onPress={() => setPersona('rich')} hitSlop={6} android_ripple={{ color: '#DBE7FF' }}>
+              <View className={cn('items-center rounded-2xl border-2 p-3.5', rich ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}>
+                <BatteryCharging size={24} color={rich ? colors.brand : colors.faint} />
+                <Txt weight="bold" className={cn('mt-2 text-[13.5px]', rich ? 'text-brand-700' : 'text-muted')}>
                   Active rider
                 </Txt>
                 <Txt weight="medium" className="text-[10.5px] text-muted">
@@ -68,10 +68,10 @@ export default function Settings() {
                 </Txt>
               </View>
             </Pressable>
-            <Pressable className="flex-1" onPress={() => rich || togglePersona()}>
-              <View className={cn('items-center rounded-2xl border-2 p-3', !rich ? 'border-brand-500 bg-brand-50' : 'border-line bg-surface')}>
-                <UserRound size={22} color={!rich ? colors.brand : colors.faint} />
-                <Txt weight="bold" className={cn('mt-1.5 text-[13px]', !rich ? 'text-brand-700' : 'text-muted')}>
+            <Pressable className="flex-1" onPress={() => setPersona('empty')} hitSlop={6} android_ripple={{ color: '#DBE7FF' }}>
+              <View className={cn('items-center rounded-2xl border-2 p-3.5', !rich ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}>
+                <UserRound size={24} color={!rich ? colors.brand : colors.faint} />
+                <Txt weight="bold" className={cn('mt-2 text-[13.5px]', !rich ? 'text-brand-700' : 'text-muted')}>
                   New rider
                 </Txt>
                 <Txt weight="medium" className="text-[10.5px] text-muted">
@@ -85,11 +85,9 @@ export default function Settings() {
           </View>
         </Card>
 
-        {/* Account */}
-        <SectionTitle>Account</SectionTitle>
+        {/* General */}
+        <SectionTitle>General</SectionTitle>
         <Card className="p-0">
-          <Row icon={<UserRound size={20} color={colors.brand} />} tone="brand" title="Profile" value={rider.name} onPress={() => {}} />
-          <Divider />
           <Row icon={<Globe size={20} color={colors.info} />} tone="info" title="Language" value="English" onPress={() => {}} />
         </Card>
 

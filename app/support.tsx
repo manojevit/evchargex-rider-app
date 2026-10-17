@@ -19,7 +19,7 @@ export default function Support() {
       <AppBar title="Help & support" back />
       <Screen contentClassName="px-5 pt-1">
         {/* Helpline hero */}
-        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="overflow-hidden rounded-3xl p-5">
+        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 28, padding: 22, overflow: 'hidden' }}>
           <View className="h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
             <Headset size={26} color="#fff" />
           </View>

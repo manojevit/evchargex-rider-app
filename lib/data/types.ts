@@ -55,7 +55,7 @@ export interface SwapHistoryRow {
   price_rupees: number;
 }
 
-export type AlertSeverity = 'warn' | 'danger' | 'info';
+export type AlertSeverity = 'success' | 'warn' | 'danger' | 'info';
 
 export interface AppAlert {
   id: string;

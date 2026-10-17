@@ -3,7 +3,8 @@ import { KeyboardAvoidingView, Platform, Pressable, TextInput, View } from 'reac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { MotiView } from '@/lib/motion';
-import { Phone, ShieldCheck, Zap } from 'lucide-react-native';
+import { Phone, ShieldCheck } from 'lucide-react-native';
+import { Logo } from '@/components/Logo';
 import { Txt } from '@/components/ui/Txt';
 import { Button } from '@/components/ui/Button';
 import { colors } from '@/lib/theme';
@@ -23,14 +24,12 @@ export default function Login() {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1 bg-canvas">
       <View className="flex-1 px-6" style={{ paddingTop: insets.top + 24, paddingBottom: insets.bottom + 20 }}>
         <MotiView from={{ opacity: 0, translateY: 14 }} animate={{ opacity: 1, translateY: 0 }}>
-          <View className="h-16 w-16 items-center justify-center rounded-2xl bg-brand-500">
-            <Zap size={30} color="#fff" fill="#fff" strokeWidth={1.5} />
-          </View>
-          <Txt weight="black" className="mt-7 text-[30px] leading-9 text-ink">
-            Welcome to{'\n'}EVCHARGEX
+          <Logo variant="row" tone="dark" size="md" tagline />
+          <Txt weight="black" className="mt-8 text-[30px] leading-9 text-foreground">
+            Sign in to{'\n'}continue
           </Txt>
           <Txt weight="regular" className="mt-3 text-[16px] leading-6 text-muted">
-            Enter your mobile number to sign in. We’ll send you a one-time code to verify it.
+            Enter your mobile number and we’ll send a one-time code to verify it.
           </Txt>
         </MotiView>
 

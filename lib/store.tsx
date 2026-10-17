@@ -32,8 +32,13 @@ const StoreContext = createContext<StoreValue | null>(null);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [signedIn, setSignedIn] = useState(false);
-  const [persona, setPersona] = useState<Persona>('rich');
+  const [persona, setPersonaState] = useState<Persona>('rich');
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
+
+  const setPersona = useCallback((p: Persona) => {
+    setPersonaState(p);
+    setReadIds(new Set());
+  }, []);
 
   const base = persona === 'rich' ? RICH : EMPTY;
 
@@ -54,7 +59,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const togglePersona = useCallback(() => {
-    setPersona((p) => (p === 'rich' ? 'empty' : 'rich'));
+    setPersonaState((p) => (p === 'rich' ? 'empty' : 'rich'));
     setReadIds(new Set());
   }, []);
 

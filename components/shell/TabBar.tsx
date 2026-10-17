@@ -2,7 +2,7 @@ import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Home, Layers, QrCode, UserRound, Zap } from 'lucide-react-native';
+import { Home, Layers, ScanLine, UserRound, Zap } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { colors, floatShadow, gradients } from '@/lib/theme';
 import { cn } from '@/lib/cn';
@@ -31,19 +31,27 @@ export function TabBar({ state, navigateToTab }: TabBarProps) {
   return (
     <View pointerEvents="box-none" className="absolute inset-x-0 bottom-0">
       {/* QR scan FAB — bottom right, above the bar */}
-      <View pointerEvents="box-none" className="absolute right-5" style={{ bottom: bottom + 78 }}>
+      <View pointerEvents="box-none" className="absolute right-5 items-center" style={{ bottom: bottom + 80 }}>
         <Pressable
           onPress={() => router.push('/scan')}
-          style={({ pressed }) => [floatShadow, pressed && { transform: [{ scale: 0.94 }] }]}
-          hitSlop={8}
+          style={({ pressed }) => [floatShadow, pressed && { transform: [{ scale: 0.93 }] }]}
+          hitSlop={10}
         >
           <LinearGradient
             colors={gradients.brand}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            className="h-16 w-16 items-center justify-center rounded-full"
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: 32,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 4,
+              borderColor: '#FFFFFF',
+            }}
           >
-            <QrCode size={28} color="#fff" strokeWidth={2.4} />
+            <ScanLine size={30} color="#fff" strokeWidth={2.4} />
           </LinearGradient>
         </Pressable>
       </View>

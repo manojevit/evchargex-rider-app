@@ -60,7 +60,7 @@ export default function StationDetail() {
 
       <Screen contentClassName="px-5 pt-1" padBottom={150}>
         {/* Banner */}
-        <LinearGradient colors={online ? ['#E6F4EC', '#DBEFE4'] : ['#FBE9E9', '#F7DEDE']} className="mb-4 h-36 items-center justify-center rounded-3xl">
+        <LinearGradient colors={online ? ['#E6F4EC', '#DBEFE4'] : ['#FBE9E9', '#F7DEDE']} style={{ height: 144, alignItems: 'center', justifyContent: 'center', borderRadius: 26, marginBottom: 16 }}>
           <View className="h-16 w-16 items-center justify-center rounded-2xl bg-white/70">
             <Zap size={34} color={online ? colors.success : colors.danger} fill={online ? colors.success : colors.danger} strokeWidth={1.2} />
           </View>

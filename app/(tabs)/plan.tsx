@@ -46,7 +46,7 @@ function ActivePlan() {
     <>
       {/* Hero */}
       <MotiView from={{ opacity: 0, translateY: 12 }} animate={{ opacity: 1, translateY: 0 }}>
-        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="overflow-hidden rounded-3xl p-5">
+        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 28, padding: 22, overflow: 'hidden' }}>
           <View className="flex-row items-center justify-between">
             <View className="rounded-full bg-white/20 px-3 py-1">
               <Txt weight="bold" className="text-[11px] tracking-wide text-white" style={{ color: '#fff' }}>
@@ -202,7 +202,7 @@ function NoPlan() {
       </Card>
 
       <MotiView from={{ opacity: 0, translateY: 12 }} animate={{ opacity: 1, translateY: 0 }} transition={{ delay: 100 }} className="mt-4">
-        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="overflow-hidden rounded-3xl p-5">
+        <LinearGradient colors={gradients.brand} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ borderRadius: 28, padding: 22, overflow: 'hidden' }}>
           <View className="flex-row items-center gap-2">
             <InfinityIcon size={22} color="#fff" />
             <Txt weight="bold" className="text-[13px] tracking-wide text-white" style={{ color: '#fff' }}>

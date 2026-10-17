@@ -26,10 +26,13 @@ interface Props extends TextProps {
 
 cssInterop(Text, { className: 'style' });
 
-export function Txt({ weight = 'regular', style, className, ...rest }: Props) {
+export function Txt({ weight = 'regular', style, className, maxFontSizeMultiplier = 1.25, ...rest }: Props) {
   return (
     <Text
       className={className}
+      // Respect the OS font-size setting, but cap it so very large fonts don't
+      // break layouts.
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
       style={[{ fontFamily: FAMILY[weight], color: '#0B1420' }, style]}
       {...rest}
     />

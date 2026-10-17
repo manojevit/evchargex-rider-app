@@ -20,7 +20,7 @@ export function StylizedMap({ stations }: { stations: Station[] }) {
 
   return (
     <View className="flex-1 overflow-hidden rounded-3xl" style={cardShadow}>
-      <LinearGradient colors={['#E8EEF6', '#DCE7F2']} className="flex-1">
+      <LinearGradient colors={['#E8EEF6', '#DCE7F2']} style={{ flex: 1 }}>
         {/* faint "roads" */}
         <View className="absolute left-0 right-0 top-[28%] h-[6px] bg-white/60" />
         <View className="absolute left-0 right-0 top-[62%] h-[6px] bg-white/50" />

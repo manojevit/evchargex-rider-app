@@ -1,5 +1,4 @@
 import { Pressable, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter, type Href } from 'expo-router';
 import {
   Bell,
@@ -11,8 +10,8 @@ import {
   Clock,
   Star,
   Wallet,
-  Zap,
 } from 'lucide-react-native';
+import { Logo } from '@/components/Logo';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
@@ -47,22 +46,25 @@ export default function Menu() {
       <AppBar large title="Menu" bell />
       <Screen contentClassName="px-5 pt-1">
         {/* Profile */}
-        <LinearGradient colors={['#EAF1FF', '#DCE8FF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} className="flex-row items-center rounded-2xl p-4">
+        <View
+          className="rounded-2xl bg-secondary p-4"
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
           <View className="h-14 w-14 items-center justify-center rounded-full bg-brand-100">
-            <Txt weight="black" className="text-[22px] text-brand-600">
+            <Txt weight="black" className="text-[22px] text-brand-700">
               {rider.avatar_letter}
             </Txt>
           </View>
-          <View className="ml-3.5 flex-1">
-            <Txt weight="extrabold" className="text-[19px] text-ink">
+          <View style={{ flex: 1, marginLeft: 14 }}>
+            <Txt weight="extrabold" className="text-[18px] text-foreground" numberOfLines={1}>
               {rider.name}
             </Txt>
-            <Txt weight="medium" className="text-[13px] text-muted">
+            <Txt weight="medium" className="mt-0.5 text-[13px] text-muted" numberOfLines={1}>
               {rider.phone}
             </Txt>
           </View>
           <ChevronRight size={22} color={colors.muted} />
-        </LinearGradient>
+        </View>
 
         {/* List */}
         <Card className="mt-4 p-0">
@@ -110,16 +112,8 @@ export default function Menu() {
         </Pressable>
 
         {/* Brand card */}
-        <View className="mt-4 overflow-hidden rounded-2xl bg-[#0B1420] p-5">
-          <View className="flex-row items-center justify-center gap-2">
-            <Zap size={20} color="#fff" fill="#3B82F6" strokeWidth={1.5} />
-            <Txt weight="black" className="text-[20px] tracking-wide text-white" style={{ color: '#fff' }}>
-              EVCHARGEX
-            </Txt>
-          </View>
-          <Txt weight="medium" className="mt-1 text-center text-[11px] tracking-[2px] text-white/60" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            ELECTRIFYING LAST-MILE MOBILITY
-          </Txt>
+        <View className="mt-4 items-center overflow-hidden rounded-2xl bg-[#0B1420] p-6">
+          <Logo variant="stack" tone="light" size="md" tagline />
         </View>
         <Txt weight="regular" className="mt-3 text-center text-[11px] text-faint">
           Version 1.0.0 · Demo build

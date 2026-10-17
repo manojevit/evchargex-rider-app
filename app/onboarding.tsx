@@ -7,28 +7,33 @@ import { MotiView } from '@/lib/motion';
 import { BatteryCharging, MapPin, Zap, type LucideIcon } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Button } from '@/components/ui/Button';
-import { IconTile } from '@/components/ui/IconTile';
+import { Logo } from '@/components/Logo';
 import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 
 const { width } = Dimensions.get('window');
 
-const SLIDES: { Icon: LucideIcon; tone: 'brand' | 'success' | 'info'; title: string; body: string }[] = [
+type Slide = { Icon: LucideIcon; color: string; tint: string; title: string; body: string };
+
+const SLIDES: Slide[] = [
   {
     Icon: Zap,
-    tone: 'brand',
+    color: colors.brand,
+    tint: '#EEF4FF',
     title: 'Swap, don’t wait to charge',
-    body: 'Trade your empty pack for a fully charged one in under a minute. No cables, no waiting around.',
+    body: 'Trade your empty pack for a fully charged one in under a minute. No cables, no waiting.',
   },
   {
     Icon: MapPin,
-    tone: 'info',
+    color: colors.info,
+    tint: '#DBEAFE',
     title: 'Stations all around you',
-    body: 'Find the nearest EVCHARGEX hub, check live battery availability, and navigate straight to it.',
+    body: 'Find the nearest hub, see live battery availability, and navigate straight to it.',
   },
   {
     Icon: BatteryCharging,
-    tone: 'success',
+    color: colors.success,
+    tint: '#DCFCE7',
     title: 'One simple monthly plan',
     body: 'Unlimited swaps for a flat monthly fee. Nothing to meter, nothing to dispute.',
   },
@@ -45,16 +50,17 @@ export default function Onboarding() {
   }).current;
 
   const last = index === SLIDES.length - 1;
-
   const next = () => {
     if (last) router.replace('/(auth)/login');
     else ref.current?.scrollToIndex({ index: index + 1 });
   };
 
   return (
-    <View className="flex-1 bg-canvas" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
       <StatusBar style="dark" />
-      <View className="flex-row justify-end px-5 pt-2">
+      {/* Top bar: logo + skip */}
+      <View className="flex-row items-center justify-between px-5 pt-3">
+        <Logo variant="row" tone="dark" size="sm" />
         <Pressable hitSlop={10} onPress={() => router.replace('/(auth)/login')}>
           <Txt weight="semibold" className="text-[15px] text-muted">
             Skip
@@ -72,17 +78,22 @@ export default function Onboarding() {
         onViewableItemsChanged={onViewable}
         viewabilityConfig={{ itemVisiblePercentThreshold: 60 }}
         renderItem={({ item }) => (
-          <View style={{ width }} className="items-center justify-center px-8">
+          <View style={{ width }} className="flex-1 items-center justify-center px-9">
+            {/* Layered hero graphic */}
             <MotiView
-              from={{ opacity: 0, scale: 0.8 }}
+              from={{ opacity: 0, scale: 0.85 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', damping: 14 }}
+              transition={{ type: 'spring', damping: 15 }}
+              style={{ width: 240, height: 240, alignItems: 'center', justifyContent: 'center' }}
             >
-              <IconTile tone={item.tone} size="lg" rounded="rounded-[32px]" className="h-28 w-28">
-                <item.Icon size={52} color={colorFor(item.tone)} strokeWidth={1.8} />
-              </IconTile>
+              <View style={{ position: 'absolute', width: 240, height: 240, borderRadius: 120, backgroundColor: item.tint, opacity: 0.45 }} />
+              <View style={{ position: 'absolute', width: 180, height: 180, borderRadius: 90, backgroundColor: item.tint, opacity: 0.8 }} />
+              <View style={{ width: 120, height: 120, borderRadius: 40, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+                <item.Icon size={56} color={item.color} strokeWidth={1.8} />
+              </View>
             </MotiView>
-            <Txt weight="black" className="mt-10 text-center text-[27px] leading-9 text-ink">
+
+            <Txt weight="black" className="mt-12 text-center text-[27px] leading-9 text-foreground">
               {item.title}
             </Txt>
             <Txt weight="regular" className="mt-4 text-center text-[16px] leading-6 text-muted">
@@ -92,21 +103,15 @@ export default function Onboarding() {
         )}
       />
 
+      {/* Footer */}
       <View className="px-6" style={{ paddingBottom: insets.bottom + 20 }}>
         <View className="mb-8 flex-row items-center justify-center gap-2">
           {SLIDES.map((_, i) => (
-            <View
-              key={i}
-              className={cn('h-2 rounded-full', i === index ? 'w-6 bg-brand-500' : 'w-2 bg-line')}
-            />
+            <View key={i} className={cn('h-2 rounded-full', i === index ? 'w-7 bg-primary' : 'w-2 bg-border')} />
           ))}
         </View>
-        <Button label={last ? 'Get started' : 'Next'} onPress={next} />
+        <Button label={last ? 'Get started' : 'Continue'} onPress={next} />
       </View>
     </View>
   );
-}
-
-function colorFor(tone: 'brand' | 'success' | 'info'): string {
-  return tone === 'brand' ? colors.brand : tone === 'success' ? colors.success : colors.info;
 }

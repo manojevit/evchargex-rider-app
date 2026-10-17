@@ -76,43 +76,48 @@ function HistoryCard({ row, index }: { row: SwapHistoryRow; index: number }) {
         </View>
 
         {!cancelled && (
-          <View className="mt-3 flex-row items-center">
-            <View className="flex-1 flex-row items-center rounded-2xl bg-warn-soft/50 p-2.5">
+          <View className="mt-3 rounded-2xl bg-canvas p-3">
+            {/* Gave */}
+            <View className="flex-row items-center">
               <IconTile tone="warn" size="sm">
                 <BatteryLow size={18} color={colors.warn} />
               </IconTile>
-              <View className="ml-2 flex-1">
+              <View className="ml-2.5 flex-1">
                 <Txt weight="medium" className="text-[11px] text-muted">
                   Gave
                 </Txt>
-                <Txt weight="bold" className="text-[12px] text-ink" numberOfLines={1}>
+                <Txt weight="bold" className="text-[14px] text-ink" numberOfLines={1} adjustsFontSizeToFit>
                   {row.gave.serial}
                 </Txt>
-                <Txt weight="bold" className="text-[12px] text-warn-ink">
-                  {row.gave.soc}%
-                </Txt>
               </View>
+              <Txt weight="black" className="text-[14px] text-warn-ink">
+                {row.gave.soc}%
+              </Txt>
             </View>
 
-            <View className="mx-2 h-9 w-9 items-center justify-center rounded-full bg-canvas">
-              <ArrowLeftRight size={16} color={colors.muted} />
+            <View className="my-2 flex-row items-center gap-2 pl-1">
+              <View className="h-7 w-7 items-center justify-center rounded-full bg-brand-50">
+                <ArrowLeftRight size={14} color={colors.brand} />
+              </View>
+              <View className="h-px flex-1 bg-line" />
             </View>
 
-            <View className="flex-1 flex-row items-center rounded-2xl bg-success-soft/50 p-2.5">
+            {/* Took */}
+            <View className="flex-row items-center">
               <IconTile tone="success" size="sm">
                 <BatteryFull size={18} color={colors.success} />
               </IconTile>
-              <View className="ml-2 flex-1">
+              <View className="ml-2.5 flex-1">
                 <Txt weight="medium" className="text-[11px] text-muted">
                   Took
                 </Txt>
-                <Txt weight="bold" className="text-[12px] text-ink" numberOfLines={1}>
+                <Txt weight="bold" className="text-[14px] text-ink" numberOfLines={1} adjustsFontSizeToFit>
                   {row.took.serial}
                 </Txt>
-                <Txt weight="bold" className="text-[12px] text-success-ink">
-                  {row.took.soc}%
-                </Txt>
               </View>
+              <Txt weight="black" className="text-[14px] text-success-ink">
+                {row.took.soc}%
+              </Txt>
             </View>
           </View>
         )}
