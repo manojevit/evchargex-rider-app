@@ -100,7 +100,7 @@ export default function StationDetail() {
                 {available} {available === 1 ? 'battery' : 'batteries'} ready
               </Txt>
               <Txt weight="semibold" className="text-[12.5px] text-success-ink">
-                Charged packs you can swap right now
+                Full batteries you can swap right now
               </Txt>
             </View>
           </View>
@@ -160,22 +160,21 @@ export default function StationDetail() {
             This station is not reporting right now, so a swap cannot be started here.
           </Txt>
         )}
-        <View className="flex-row gap-3">
-          <Button
-            label="Directions"
-            variant="outline"
-            block={false}
-            className="flex-1"
-            leftIcon={<Navigation size={18} color={colors.brand} fill={colors.brand} />}
+        <View className="flex-row items-center gap-3">
+          <Pressable
             onPress={() =>
               Linking.openURL(
                 `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${station.name}, ${station.address}`)}`,
               )
             }
-          />
+            className="h-14 w-14 items-center justify-center rounded-2xl border border-brand-500 bg-card"
+            style={({ pressed }) => (pressed ? { opacity: 0.85 } : undefined)}
+          >
+            <Navigation size={20} color={colors.brand} fill={colors.brand} />
+          </Pressable>
           <View className="flex-1">
             <Button
-              label="Proceed swap"
+              label="Start swap"
               disabled={!online}
               leftIcon={<Zap size={18} color="#fff" fill="#fff" />}
               onPress={() => router.push(`/swap/preflight?station=${station.id}`)}

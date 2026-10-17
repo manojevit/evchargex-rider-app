@@ -80,7 +80,7 @@ export function Button({
       ) : (
         <>
           {leftIcon}
-          <Txt weight="bold" className={textSize} style={{ color: textColor }}>
+          <Txt weight="bold" className={textSize} style={{ color: textColor }} numberOfLines={1}>
             {label}
           </Txt>
           {rightIcon}

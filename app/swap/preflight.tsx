@@ -34,10 +34,10 @@ export default function Preflight() {
   const dispense = charged[0];
 
   const checks = [
-    { icon: <Wifi size={18} color={colors.success} />, label: 'Station online', ok: true },
-    { icon: <Radio size={18} color={colors.success} />, label: 'Cabinet reporting live', ok: true },
-    { icon: <BatteryCharging size={18} color={colors.success} />, label: `${charged.length} charged packs available`, ok: true },
-    { icon: <DoorOpen size={18} color={colors.success} />, label: `Return slot ${returnSlot} is free`, ok: true },
+    { icon: <Wifi size={18} color={colors.success} />, label: 'Station is online', ok: true },
+    { icon: <Radio size={18} color={colors.success} />, label: 'Station is working fine', ok: true },
+    { icon: <BatteryCharging size={18} color={colors.success} />, label: `${charged.length} full batteries available`, ok: true },
+    { icon: <DoorOpen size={18} color={colors.success} />, label: `Slot ${returnSlot} is ready for your battery`, ok: true },
   ];
 
   return (
@@ -65,10 +65,10 @@ export default function Preflight() {
         </Card>
 
         <Txt weight="black" className="mb-1 mt-6 text-[18px] text-ink">
-          Pre-flight checks
+          Before you swap
         </Txt>
         <Txt weight="regular" className="mb-3 text-[13px] text-muted">
-          Everything looks good to start your swap.
+          Everything’s ready. You’re good to go.
         </Txt>
 
         <Card>
@@ -95,16 +95,16 @@ export default function Preflight() {
 
         <View className="mt-4 flex-row gap-3">
           <Card className="flex-1 items-center py-4">
-            <Txt weight="medium" className="text-[12px] text-muted">
-              Return your pack to
+            <Txt weight="medium" className="text-center text-[12px] text-muted">
+              Put your old battery in
             </Txt>
             <Txt weight="black" className="mt-1 text-[22px] text-brand-600">
               Slot {returnSlot}
             </Txt>
           </Card>
           <Card className="flex-1 items-center py-4">
-            <Txt weight="medium" className="text-[12px] text-muted">
-              Collect charged from
+            <Txt weight="medium" className="text-center text-[12px] text-muted">
+              Take your full battery from
             </Txt>
             <Txt weight="black" className="mt-1 text-[22px] text-success">
               Slot {dispense?.slot_number}
@@ -114,7 +114,7 @@ export default function Preflight() {
 
         <View className="mt-3 rounded-2xl bg-brand-50 p-3.5">
           <Txt weight="medium" className="text-[12.5px] leading-5 text-brand-700">
-            You have a 3-minute window once the swap starts. Your plan covers this swap — no charge.
+            You’ll have 3 minutes once you start. Your plan covers this — no charge.
           </Txt>
         </View>
       </Screen>

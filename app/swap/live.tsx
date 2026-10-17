@@ -38,12 +38,12 @@ const STEP_OF: Record<Phase, number> = {
 
 // The rider advances each step themselves — nothing happens automatically.
 const NEXT_LABEL: Record<Phase, string> = {
-  return_open: 'I’ve inserted my battery',
-  inserted: 'I’ve closed the door',
-  verifying: 'Battery verified — continue',
-  processing: 'Dispense my charged battery',
-  dispense_open: 'I’ve collected the battery',
-  collected: 'Finish swap',
+  return_open: 'I put my battery in',
+  inserted: 'I closed the door',
+  verifying: 'Continue',
+  processing: 'Give me my battery',
+  dispense_open: 'I took my battery',
+  collected: 'Finish',
   completed: '',
 };
 
@@ -172,7 +172,7 @@ function PhaseView({
           Slot {returnSlot} is open
         </Txt>
         <Txt weight="regular" className="mt-2 text-center text-[14px] text-muted">
-          Open the lit slot and insert your discharged battery.
+          Open Slot {returnSlot} and put your empty battery inside.
         </Txt>
         {timerVisible && (
           <>
@@ -185,7 +185,7 @@ function PhaseView({
           </>
         )}
         <View className="mt-6 w-full rounded-2xl bg-card p-5" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
-          {['Remove the battery from your vehicle.', 'Insert it into the opened slot.', 'Connect the cabinet connector.'].map((t, i) => (
+          {['Take the old battery out of your bike.', 'Put it inside the open slot.', 'Plug in the connector.'].map((t, i) => (
             <View key={i} className={cn('flex-row items-center', i > 0 && 'mt-3')}>
               <View className="h-6 w-6 items-center justify-center rounded-full bg-primary">
                 <Txt weight="bold" className="text-[11px]" style={{ color: '#fff' }}>
@@ -207,8 +207,8 @@ function PhaseView({
       <Centered
         tone="brand"
         icon={<ArrowDownToLine size={46} color={colors.brand} />}
-        title="Battery deposited"
-        lines={[`Discharged battery detected in Slot ${returnSlot}.`, 'Now close the cabinet door, then tap below.']}
+        title="Battery added"
+        lines={[`Your old battery is in Slot ${returnSlot}.`, 'Now close the door and tap below.']}
       />
     );
   }
@@ -220,10 +220,10 @@ function PhaseView({
           {phase === 'verifying' ? <Check size={52} color={colors.success} strokeWidth={3} /> : <BatteryCharging size={48} color={colors.success} />}
         </MotiView>
         <Txt weight="black" className="mt-6 text-center text-[24px] text-success">
-          {phase === 'verifying' ? 'Verifying your battery' : 'Return confirmed'}
+          {phase === 'verifying' ? 'Checking your battery' : 'All done!'}
         </Txt>
         <Txt weight="medium" className="mt-2 text-center text-[14px] text-foreground">
-          {phase === 'verifying' ? 'The cabinet is checking the returned pack.' : 'A charged battery is ready for you.'}
+          {phase === 'verifying' ? 'Please wait a moment.' : 'Your full battery is ready.'}
         </Txt>
       </View>
     );
@@ -233,10 +233,10 @@ function PhaseView({
     return (
       <View className="items-center">
         <Txt weight="black" className="text-center text-[30px] text-success">
-          Collect charged battery
+          Take your full battery
         </Txt>
         <Txt weight="regular" className="mt-2 text-center text-[14px] text-muted">
-          Slot {dispenseSlot} is open for collection.
+          Slot {dispenseSlot} is open for you.
         </Txt>
         <View className="mt-5 rounded-full bg-success-soft px-5 py-2">
           <Txt weight="black" className="text-[18px] text-success-ink">
@@ -244,7 +244,7 @@ function PhaseView({
           </Txt>
         </View>
         <View className="mt-6 w-full rounded-2xl border border-success/20 bg-success-soft/40 p-5">
-          {['Open the output slot.', 'Remove the charged battery.', 'Close the output door.'].map((t, i) => (
+          {[`Open Slot ${dispenseSlot}.`, 'Take out the full battery.', 'Close the door.'].map((t, i) => (
             <View key={i} className={cn('flex-row items-center', i > 0 && 'mt-3')}>
               <View className="h-6 w-6 items-center justify-center rounded-full bg-success">
                 <Txt weight="bold" className="text-[11px]" style={{ color: '#fff' }}>
@@ -266,8 +266,8 @@ function PhaseView({
     <Centered
       tone="success"
       icon={<ArrowUpFromLine size={46} color={colors.success} />}
-      title="Battery collected"
-      lines={['Charged pack removed successfully.', 'Tap below to finish your swap.']}
+      title="Battery taken"
+      lines={['You got your full battery.', 'Tap below to finish.']}
     />
   );
 }
