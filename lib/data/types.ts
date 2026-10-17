@@ -101,6 +101,9 @@ export interface Rider {
   name: string;
   phone: string;
   avatar_letter: string;
+  rider_id: string;
+  organisation: string;
+  member_since: string;
 }
 
 export interface SupportTopic {

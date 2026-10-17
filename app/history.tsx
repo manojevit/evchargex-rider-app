@@ -9,7 +9,7 @@ import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
 import { colors } from '@/lib/theme';
-import { dateTime } from '@/lib/format';
+import { dayLabel, rupees, timeOnly } from '@/lib/format';
 import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
 import type { SwapHistoryRow } from '@/lib/data/types';
@@ -50,6 +50,18 @@ export default function History() {
   }, [account.history, filter, dateFilter]);
 
   const filterActive = filter !== 'all' || dateFilter !== 'all';
+  const plan = account.plan;
+
+  // Group rows by day for readable, scannable sections.
+  const groups = useMemo(() => {
+    const m = new Map<string, SwapHistoryRow[]>();
+    rows.forEach((r) => {
+      const key = dayLabel(r.at);
+      if (!m.has(key)) m.set(key, []);
+      m.get(key)!.push(r);
+    });
+    return Array.from(m.entries());
+  }, [rows]);
 
   return (
     <View className="flex-1 bg-background">
@@ -105,24 +117,53 @@ export default function History() {
         </View>
       )}
       <Screen contentClassName="px-5 pt-1">
-        <Txt weight="regular" className="mb-3 text-[13px] text-muted">
-          View your past battery swap transactions
-        </Txt>
+        {/* Summary */}
+        <View className="mb-4 flex-row items-center justify-between rounded-2xl bg-secondary p-4">
+          <View>
+            <Txt weight="black" className="text-[22px] text-brand-700">
+              {rows.length} {rows.length === 1 ? 'swap' : 'swaps'}
+            </Txt>
+            <Txt weight="medium" className="text-[12px] text-muted">
+              {filterActive ? 'matching your filter' : 'all time'}
+            </Txt>
+          </View>
+          {plan && !filterActive && (
+            <View className="items-end">
+              <Txt weight="black" className="text-[18px] text-success">
+                {rupees(plan.saved_rupees)}
+              </Txt>
+              <Txt weight="medium" className="text-[11px] text-muted">
+                saved vs retail
+              </Txt>
+            </View>
+          )}
+        </View>
 
         {rows.length === 0 ? (
-          <Card className="mt-10 items-center py-10">
+          <Card className="mt-6 items-center py-10">
             <IconTile tone="neutral" size="lg" rounded="rounded-2xl">
               <Clock size={30} color={colors.faint} />
             </IconTile>
-            <Txt weight="extrabold" className="mt-4 text-[17px] text-ink">
-              No swaps yet
+            <Txt weight="extrabold" className="mt-4 text-[17px] text-foreground">
+              {filterActive ? 'No swaps match' : 'No swaps yet'}
             </Txt>
             <Txt weight="regular" className="mt-2 px-8 text-center text-[13.5px] text-muted">
-              Once you complete your first battery swap, it will show up here.
+              {filterActive
+                ? 'Try a different status or date filter.'
+                : 'Once you complete your first battery swap, it will show up here.'}
             </Txt>
           </Card>
         ) : (
-          rows.map((row, i) => <HistoryCard key={row.id} row={row} index={i} />)
+          groups.map(([day, items]) => (
+            <View key={day} className="mb-1">
+              <Txt weight="bold" className="mb-2 mt-1 text-[12px] uppercase tracking-wide text-muted">
+                {day}
+              </Txt>
+              {items.map((row, i) => (
+                <HistoryCard key={row.id} row={row} index={i} />
+              ))}
+            </View>
+          ))
         )}
       </Screen>
     </View>
@@ -137,8 +178,8 @@ function HistoryCard({ row, index }: { row: SwapHistoryRow; index: number }) {
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-2">
             <Clock size={15} color={colors.muted} />
-            <Txt weight="bold" className="text-[13.5px] text-ink">
-              {dateTime(row.at)}
+            <Txt weight="bold" className="text-[13.5px] text-foreground">
+              {timeOnly(row.at)}
             </Txt>
           </View>
           <Badge

@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
-import { colors } from '@/lib/theme';
+import { cardShadow, colors } from '@/lib/theme';
 import { useStore } from '@/lib/store';
 
 export default function Menu() {
@@ -46,23 +46,28 @@ export default function Menu() {
         {/* Profile */}
         <Pressable
           onPress={() => router.push('/profile')}
-          className="rounded-2xl bg-secondary p-4"
-          style={({ pressed }) => [{ flexDirection: 'row', alignItems: 'center' }, pressed && { opacity: 0.9 }]}
+          className="flex-row items-center rounded-2xl bg-card p-4"
+          style={({ pressed }) => [cardShadow, pressed ? { opacity: 0.92 } : null]}
         >
           <View className="h-14 w-14 items-center justify-center rounded-full bg-brand-100">
             <Txt weight="black" className="text-[22px] text-brand-700">
-              {rider.avatar_letter}
+              {(rider.name.trim()[0] || rider.avatar_letter).toUpperCase()}
             </Txt>
           </View>
-          <View style={{ flex: 1, marginLeft: 14 }}>
+          <View className="ml-3.5 flex-1">
             <Txt weight="extrabold" className="text-[18px] text-foreground" numberOfLines={1}>
               {rider.name}
             </Txt>
-            <Txt weight="medium" className="mt-0.5 text-[13px] text-muted" numberOfLines={1}>
+            <Txt weight="medium" className="text-[13px] text-muted" numberOfLines={1}>
               {rider.phone}
             </Txt>
+            <View className="mt-1 flex-row items-center gap-1">
+              <Txt weight="bold" className="text-[11.5px] text-brand-600">
+                View & edit profile
+              </Txt>
+              <ChevronRight size={13} color={colors.brand} />
+            </View>
           </View>
-          <ChevronRight size={22} color={colors.muted} />
         </Pressable>
 
         {/* List */}

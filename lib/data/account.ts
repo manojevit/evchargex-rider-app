@@ -14,6 +14,9 @@ export const RIDER: Rider = {
   name: 'Manoj',
   phone: '+91 78770 18453',
   avatar_letter: 'M',
+  rider_id: 'EVX-RD-10482',
+  organisation: 'EVCHARGEX Partner Fleet',
+  member_since: 'March 2026',
 };
 
 const VEHICLE: Vehicle = {
