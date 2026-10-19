@@ -34,8 +34,8 @@ export const gradients = {
   brand: ['#1E63F0', '#1340AC'] as const,
   // Light-blue vehicle card
   brandSoft: ['#EAF1FF', '#DCE8FF'] as const,
-  // Splash
-  splash: ['#2A6DF4', '#1340AC'] as const,
+  // Splash — brand black (matches the EX app icon), subtle depth
+  splash: ['#131E2B', '#0B1420', '#070D14'] as const,
 };
 
 /** Soft shadow used on cards (iOS) — Android uses elevation. */
