@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { IconTile } from '@/components/ui/IconTile';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Screen } from '@/components/ui/Screen';
-import { StationCard, StationRowCompact } from '@/components/StationCard';
+import { StationHero, StationRowCompact } from '@/components/StationCard';
 import { colors } from '@/lib/theme';
 import { rupees } from '@/lib/format';
 import { cn } from '@/lib/cn';
@@ -187,7 +187,7 @@ export default function Home() {
           </Pressable>
         </View>
 
-        {hero && <StationCard station={hero} />}
+        {hero && <StationHero station={hero} />}
         {rest.slice(0, 2).map((s) => (
           <StationRowCompact key={s.id} station={s} />
         ))}
