@@ -9,7 +9,7 @@ import { BatteryCharging, MapPin, Zap, type LucideIcon } from 'lucide-react-nati
 import { Txt } from '@/components/ui/Txt';
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/Logo';
-import { gradients } from '@/lib/theme';
+import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 
 const { width } = Dimensions.get('window');
@@ -19,54 +19,70 @@ type Slide = { Icon: LucideIcon; accent: string; title: string; body: string };
 const SLIDES: Slide[] = [
   {
     Icon: Zap,
-    accent: '#3B82F6',
+    accent: colors.brand, // blue
     title: 'Swap, don’t wait to charge',
     body: 'Trade your empty pack for a fully charged one in under a minute. No cables, no waiting.',
   },
   {
     Icon: MapPin,
-    accent: '#22D3EE',
+    accent: '#0EA5E9', // sky
     title: 'Stations all around you',
     body: 'Find the nearest hub, see live battery availability, and navigate straight to it.',
   },
   {
     Icon: BatteryCharging,
-    accent: '#34D399',
+    accent: colors.success, // green
     title: 'One simple monthly plan',
     body: 'Unlimited swaps for a flat monthly fee. Nothing to meter, nothing to dispute.',
   },
 ];
 
-/** Glowing brand hero for the dark onboarding — layered accent halo + glass tile. */
+/**
+ * Light hero: small, soft accent glow (layered low-opacity rings for a smooth
+ * radial falloff) behind a white tile holding the feature icon.
+ */
 function Hero({ Icon, accent }: { Icon: LucideIcon; accent: string }) {
+  // Closely-spaced, very low-opacity rings = a smooth, faint radial glow.
+  const rings = [
+    { size: 168, opacity: 0.05 },
+    { size: 142, opacity: 0.06 },
+    { size: 118, opacity: 0.07 },
+  ];
   return (
-    <View style={{ width: 260, height: 260, alignItems: 'center', justifyContent: 'center' }}>
-      {/* Breathing outer halo */}
+    <View style={{ width: 200, height: 200, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Breathing outermost ring — stays faint (animate opacity drives the view, so keep it low). */}
       <MotiView
-        from={{ opacity: 0.35, scale: 0.92 }}
-        animate={{ opacity: 0.6, scale: 1.08 }}
-        transition={{ type: 'timing', duration: 2600, loop: true, repeatReverse: true }}
-        style={{ position: 'absolute', width: 260, height: 260, borderRadius: 130, backgroundColor: accent, opacity: 0.12 }}
+        from={{ opacity: 0.04, scale: 0.95 }}
+        animate={{ opacity: 0.085, scale: 1.05 }}
+        transition={{ type: 'timing', duration: 3000, loop: true, repeatReverse: true }}
+        style={{ position: 'absolute', width: 196, height: 196, borderRadius: 98, backgroundColor: accent }}
       />
-      <View style={{ position: 'absolute', width: 190, height: 190, borderRadius: 95, backgroundColor: accent, opacity: 0.16 }} />
-      <View style={{ position: 'absolute', width: 190, height: 190, borderRadius: 95, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }} />
-      {/* Glass tile */}
+      {rings.map((r) => (
+        <View
+          key={r.size}
+          style={{ position: 'absolute', width: r.size, height: r.size, borderRadius: r.size / 2, backgroundColor: accent, opacity: r.opacity }}
+        />
+      ))}
+      {/* White tile */}
       <MotiView
-        from={{ opacity: 0, scale: 0.8, translateY: 8 }}
+        from={{ opacity: 0, scale: 0.82, translateY: 8 }}
         animate={{ opacity: 1, scale: 1, translateY: 0 }}
         transition={{ type: 'spring', damping: 14, stiffness: 150 }}
         style={{
-          width: 124,
-          height: 124,
-          borderRadius: 38,
+          width: 96,
+          height: 96,
+          borderRadius: 30,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: 'rgba(255,255,255,0.06)',
-          borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.14)',
+          backgroundColor: '#FFFFFF',
+          shadowColor: accent,
+          shadowOpacity: 0.22,
+          shadowRadius: 20,
+          shadowOffset: { width: 0, height: 10 },
+          elevation: 6,
         }}
       >
-        <Icon size={56} color={accent} strokeWidth={1.8} />
+        <Icon size={44} color={accent} strokeWidth={1.9} />
       </MotiView>
     </View>
   );
@@ -89,22 +105,22 @@ export default function Onboarding() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: '#0B1420' }}>
-      <StatusBar style="light" />
-      {/* Brand-black backdrop (same tone as the splash) */}
+    <View className="flex-1" style={{ backgroundColor: '#FFFFFF' }}>
+      <StatusBar style="dark" />
+      {/* Soft light backdrop */}
       <LinearGradient
-        colors={gradients.splash}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        colors={['#FFFFFF', '#F3F7FC', '#EAF1F9']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
       />
 
       <View style={{ flex: 1, paddingTop: insets.top }}>
         {/* Top bar: logo + skip */}
         <View className="flex-row items-center justify-between px-5 pt-3">
-          <Logo variant="row" tone="light" size="sm" />
+          <Logo variant="row" tone="dark" size="sm" />
           <Pressable hitSlop={10} onPress={() => router.replace('/(auth)/login')}>
-            <Txt weight="semibold" className="text-[15px]" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <Txt weight="semibold" className="text-[15px] text-muted">
               Skip
             </Txt>
           </Pressable>
@@ -123,10 +139,10 @@ export default function Onboarding() {
             <View style={{ width }} className="flex-1 items-center justify-center px-9">
               <Hero Icon={item.Icon} accent={item.accent} />
 
-              <Txt weight="black" className="mt-12 text-center text-[27px] leading-9" style={{ color: '#FFFFFF' }}>
+              <Txt weight="black" className="mt-12 text-center text-[27px] leading-9 text-foreground">
                 {item.title}
               </Txt>
-              <Txt weight="regular" className="mt-4 text-center text-[16px] leading-6" style={{ color: 'rgba(255,255,255,0.62)' }}>
+              <Txt weight="regular" className="mt-4 text-center text-[16px] leading-6 text-muted">
                 {item.body}
               </Txt>
             </View>
@@ -137,11 +153,7 @@ export default function Onboarding() {
         <View className="px-6" style={{ paddingBottom: insets.bottom + 20 }}>
           <View className="mb-8 flex-row items-center justify-center gap-2">
             {SLIDES.map((_, i) => (
-              <View
-                key={i}
-                className={cn('h-2 rounded-full', i === index ? 'w-7' : 'w-2')}
-                style={{ backgroundColor: i === index ? '#FFFFFF' : 'rgba(255,255,255,0.22)' }}
-              />
+              <View key={i} className={cn('h-2 rounded-full', i === index ? 'w-7 bg-primary' : 'w-2 bg-border')} />
             ))}
           </View>
           <Button label={last ? 'Get started' : 'Continue'} onPress={next} />
