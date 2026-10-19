@@ -75,29 +75,29 @@ export function StationCard({ station, fade, nearest }: { station: Station; fade
   return (
     <Pressable
       onPress={() => router.push(`/station/${station.id}`)}
-      className="mb-3 flex-row overflow-hidden rounded-2xl bg-surface"
+      className="mb-2.5 flex-row overflow-hidden rounded-2xl bg-surface"
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
-      <StationPhoto station={station} width={120} online={online} fade={fade} nearest={nearest} />
-      <View className="flex-1 justify-center p-3.5">
+      <StationPhoto station={station} width={104} online={online} fade={fade} nearest={nearest} />
+      <View className="flex-1 justify-center px-3 py-2.5">
         <View className="flex-row items-center justify-between">
-          <Txt weight="extrabold" className="flex-1 pr-2 text-[16.5px] text-foreground" numberOfLines={1}>
+          <Txt weight="extrabold" className="flex-1 pr-2 text-[14.5px] text-foreground" numberOfLines={1}>
             {station.code}
           </Txt>
           <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
         </View>
-        <Txt weight="semibold" className="mt-0.5 text-[13.5px] text-ink" numberOfLines={1}>
+        <Txt weight="semibold" className="mt-0.5 text-[12px] text-ink" numberOfLines={1}>
           {station.name}
         </Txt>
-        <View className="mt-2 flex-row items-center">
+        <View className="mt-1.5 flex-row items-center">
           <View className="flex-1 flex-row items-center gap-1 pr-1.5">
-            <MapPin size={12} color={colors.faint} />
-            <Txt weight="medium" className="flex-1 text-[12px] text-muted" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+            <MapPin size={11} color={colors.faint} />
+            <Txt weight="medium" className="flex-1 text-[11px] text-muted" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
               {distanceLine}
             </Txt>
           </View>
-          <BatteryCount count={station.charged} active={online} size="md" />
-          <ChevronRight size={18} color={colors.faint} style={{ marginLeft: 4 }} />
+          <BatteryCount count={station.charged} active={online} size="sm" />
+          <ChevronRight size={17} color={colors.faint} style={{ marginLeft: 4 }} />
         </View>
       </View>
     </Pressable>
