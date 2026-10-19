@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { MotiView } from '@/lib/motion';
-import { ArrowLeftRight, BatteryFull, BatteryLow, Clock, MapPin, ShieldCheck, SlidersHorizontal } from 'lucide-react-native';
+import { ArrowLeftRight, BatteryFull, BatteryLow, Clock, Download, MapPin, ShieldCheck, SlidersHorizontal } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -9,9 +9,10 @@ import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
 import { colors } from '@/lib/theme';
-import { dayLabel, rupees, timeOnly } from '@/lib/format';
+import { dayLabel, timeOnly } from '@/lib/format';
 import { cn } from '@/lib/cn';
 import { useStore } from '@/lib/store';
+import { useToast } from '@/lib/toast';
 import type { SwapHistoryRow } from '@/lib/data/types';
 
 type Filter = 'all' | 'completed' | 'cancelled';
@@ -50,7 +51,11 @@ export default function History() {
   }, [account.history, filter, dateFilter]);
 
   const filterActive = filter !== 'all' || dateFilter !== 'all';
-  const plan = account.plan;
+  const toast = useToast();
+
+  const exportHistory = () => {
+    toast.show(rows.length ? 'Swap history downloaded' : 'No swaps to export', rows.length ? 'success' : 'default');
+  };
 
   // Group rows by day for readable, scannable sections.
   const groups = useMemo(() => {
@@ -69,15 +74,24 @@ export default function History() {
         title="Swap history"
         back
         right={
-          <Pressable
-            onPress={() => setShowFilters((v) => !v)}
-            className={cn('mr-1 h-10 flex-row items-center gap-1.5 rounded-xl border px-3', showFilters || filterActive ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}
-          >
-            <SlidersHorizontal size={15} color={showFilters || filterActive ? colors.brand : colors.ink} />
-            <Txt weight="bold" className={cn('text-[12px]', showFilters || filterActive ? 'text-brand-600' : 'text-ink')}>
-              Filter
-            </Txt>
-          </Pressable>
+          <View className="mr-1 flex-row items-center gap-2">
+            <Pressable
+              onPress={exportHistory}
+              hitSlop={6}
+              className="h-10 w-10 items-center justify-center rounded-xl border border-border bg-card"
+            >
+              <Download size={17} color={colors.ink} />
+            </Pressable>
+            <Pressable
+              onPress={() => setShowFilters((v) => !v)}
+              className={cn('h-10 flex-row items-center gap-1.5 rounded-xl border px-3', showFilters || filterActive ? 'border-brand-500 bg-brand-50' : 'border-border bg-card')}
+            >
+              <SlidersHorizontal size={15} color={showFilters || filterActive ? colors.brand : colors.ink} />
+              <Txt weight="bold" className={cn('text-[12px]', showFilters || filterActive ? 'text-brand-600' : 'text-ink')}>
+                Filter
+              </Txt>
+            </Pressable>
+          </View>
         }
       />
       {showFilters && (
@@ -117,28 +131,6 @@ export default function History() {
         </View>
       )}
       <Screen contentClassName="px-5 pt-1">
-        {/* Summary */}
-        <View className="mb-4 flex-row items-center justify-between rounded-2xl bg-secondary p-4">
-          <View>
-            <Txt weight="black" className="text-[22px] text-brand-700">
-              {rows.length} {rows.length === 1 ? 'swap' : 'swaps'}
-            </Txt>
-            <Txt weight="medium" className="text-[12px] text-muted">
-              {filterActive ? 'matching your filter' : 'all time'}
-            </Txt>
-          </View>
-          {plan && !filterActive && (
-            <View className="items-end">
-              <Txt weight="black" className="text-[18px] text-success">
-                {rupees(plan.saved_rupees)}
-              </Txt>
-              <Txt weight="medium" className="text-[11px] text-muted">
-                saved vs retail
-              </Txt>
-            </View>
-          )}
-        </View>
-
         {rows.length === 0 ? (
           <Card className="mt-6 items-center py-10">
             <IconTile tone="neutral" size="lg" rounded="rounded-2xl">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MotiView } from '@/lib/motion';
 import { Check, CreditCard, Smartphone, X } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
@@ -15,7 +15,9 @@ const PRESETS = [200, 500, 1000, 2000, 3000, 5000];
 export default function Topup() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [amount, setAmount] = useState(500);
+  const { amount: amountParam } = useLocalSearchParams<{ amount?: string }>();
+  const initialAmount = Number(amountParam);
+  const [amount, setAmount] = useState(Number.isFinite(initialAmount) && initialAmount > 0 ? initialAmount : 500);
   const [method, setMethod] = useState<'upi' | 'card'>('upi');
   const [done, setDone] = useState(false);
 
