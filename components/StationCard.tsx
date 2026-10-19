@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { BatteryFull, ChevronRight, MapPin } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
@@ -9,10 +10,10 @@ import { colors, cardShadow } from '@/lib/theme';
 import type { Station } from '@/lib/data/types';
 
 /** Full-height station photo that fills the left side of the card (flush to the edges). */
-function StationPhoto({ station, width, online }: { station: Station; width: number; online: boolean }) {
+function StationPhoto({ station, width, online, fade }: { station: Station; width: number; online: boolean; fade?: boolean }) {
   const [err, setErr] = useState(false);
   const uri = station.images?.[0]?.uri;
-  const bg = online ? '#E6F4EC' : '#F2F5F9';
+  const bg = fade ? '#FFFFFF' : online ? '#E6F4EC' : '#F2F5F9';
   return (
     <View style={{ width, alignSelf: 'stretch', backgroundColor: bg }}>
       {uri && !err ? (
@@ -27,12 +28,25 @@ function StationPhoto({ station, width, online }: { station: Station; width: num
           <BatteryFull size={30} color={online ? colors.success : colors.faint} strokeWidth={2} />
         </View>
       )}
+
+      {/* Horizontal edge-fade: left & right edges melt into the white card; center stays sharp.
+          Uses rgba(255,255,255,0) (not "transparent") so there's no grey boundary. */}
+      {fade && (
+        <LinearGradient
+          colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)', 'rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+          locations={[0, 0.24, 0.76, 1]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+          pointerEvents="none"
+        />
+      )}
     </View>
   );
 }
 
 /** Full-width list card used on the Stations screen and Home "Swap near you". */
-export function StationCard({ station }: { station: Station }) {
+export function StationCard({ station, fade }: { station: Station; fade?: boolean }) {
   const router = useRouter();
   const online = station.status === 'online';
 
@@ -42,7 +56,7 @@ export function StationCard({ station }: { station: Station }) {
       className="mb-3 flex-row overflow-hidden rounded-2xl bg-surface"
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
-      <StationPhoto station={station} width={112} online={online} />
+      <StationPhoto station={station} width={112} online={online} fade={fade} />
       <View className="flex-1 p-3.5">
         <View className="flex-row items-center justify-between">
           <Txt weight="extrabold" className="flex-1 pr-2 text-[16.5px] text-foreground" numberOfLines={1}>

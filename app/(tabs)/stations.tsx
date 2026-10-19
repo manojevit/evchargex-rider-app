@@ -127,7 +127,7 @@ export default function Stations() {
               </Txt>
             </View>
           ) : (
-            list.map((s) => <StationCard key={s.id} station={s} />)
+            list.map((s) => <StationCard key={s.id} station={s} fade />)
           )}
         </Screen>
       ) : (
@@ -139,7 +139,7 @@ export default function Stations() {
             {list.length} {list.length === 1 ? 'station' : 'stations'} nearby
           </Txt>
           {list.map((s) => (
-            <StationCard key={s.id} station={s} />
+            <StationCard key={s.id} station={s} fade />
           ))}
         </Screen>
       )}
