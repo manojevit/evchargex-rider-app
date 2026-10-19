@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { EMPTY, RICH, RIDER } from './data/account';
-import type { AccountSnapshot, Rider } from './data/types';
+import { EMPTY, RICH, RIDER, TICKETS } from './data/account';
+import type { AccountSnapshot, Rider, Ticket } from './data/types';
 
 /**
  * In-memory app store for the demo. No backend — this just holds:
@@ -35,6 +35,9 @@ interface StoreValue {
   unreadAlerts: number;
   markAllAlertsRead: () => void;
   markAlertRead: (id: string) => void;
+
+  tickets: Ticket[];
+  addTicket: (category: string, body: string) => Ticket;
 }
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -47,6 +50,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState('English');
   const [email, setEmail] = useState('');
   const [emailVerified, setEmailVerified] = useState(false);
+  const [tickets, setTickets] = useState<Ticket[]>(TICKETS);
+
+  const addTicket = useCallback((category: string, body: string): Ticket => {
+    const ticket: Ticket = {
+      id: `TKT-${Math.floor(1000 + Math.random() * 9000)}`,
+      category,
+      body: body.trim(),
+      status: 'open',
+      at: new Date().toISOString(),
+    };
+    setTickets((prev) => [ticket, ...prev]);
+    return ticket;
+  }, []);
 
   const rider = useMemo<Rider>(() => ({ ...RIDER, name: riderName }), [riderName]);
   const updateName = useCallback((name: string) => setRiderName(name.trim() || RIDER.name), []);
@@ -115,6 +131,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     unreadAlerts,
     markAllAlertsRead,
     markAlertRead,
+    tickets,
+    addTicket,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

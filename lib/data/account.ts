@@ -6,8 +6,30 @@ import type {
   Rider,
   SupportTopic,
   SwapHistoryRow,
+  Ticket,
   Vehicle,
 } from './types';
+
+/** Support ticket categories the rider can raise an issue under. */
+export const TICKET_CATEGORIES = [
+  'Swap issue',
+  'Payment & wallet',
+  'Battery / pack',
+  'Station problem',
+  'App / account',
+  'Other',
+] as const;
+
+/** A couple of seeded tickets so the list isn't empty in the demo. */
+export const TICKETS: Ticket[] = [
+  {
+    id: 'TKT-2041',
+    category: 'Payment & wallet',
+    body: 'Wallet top-up of ₹500 wasn’t reflecting after a UPI payment.',
+    status: 'resolved',
+    at: '2026-10-13T11:20:00+05:30',
+  },
+];
 
 /** The rider — straight from sir's real app. */
 export const RIDER: Rider = {

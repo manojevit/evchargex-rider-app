@@ -55,6 +55,7 @@ export default function RootLayout() {
             <Stack.Screen name="wallet/index" />
             <Stack.Screen name="wallet/topup" options={{ presentation: 'modal' }} />
             <Stack.Screen name="alerts" />
+            <Stack.Screen name="tickets" />
             <Stack.Screen name="support" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="profile" />

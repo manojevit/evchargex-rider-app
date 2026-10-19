@@ -1,10 +1,10 @@
 import { Pressable, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import {
-  Bell,
   ChevronRight,
   CreditCard,
   HelpCircle,
+  LifeBuoy,
   LogOut,
   Settings,
   Clock,
@@ -21,7 +21,7 @@ import { useStore } from '@/lib/store';
 
 export default function Menu() {
   const router = useRouter();
-  const { rider, signOut, unreadAlerts } = useStore();
+  const { rider, signOut } = useStore();
 
   const items: {
     icon: React.ReactNode;
@@ -34,7 +34,7 @@ export default function Menu() {
     { icon: <Clock size={22} color={colors.brand} />, tone: 'brand', title: 'Swap history', sub: 'View your past swaps', href: '/history' },
     { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription & plan', sub: 'Your plan, benefits & billing', href: '/(tabs)/plan' },
     { icon: <Wallet size={22} color={colors.success} />, tone: 'success', title: 'Wallet', sub: 'Balance & transactions', href: '/wallet' },
-    { icon: <Bell size={22} color={colors.danger} />, tone: 'danger', title: 'Alerts', sub: 'Manage your notifications', href: '/alerts', badge: unreadAlerts },
+    { icon: <LifeBuoy size={22} color={colors.warn} />, tone: 'warn', title: 'Raise a ticket', sub: 'Report an issue or get help', href: '/tickets' },
     { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
     { icon: <HelpCircle size={22} color={colors.brand} />, tone: 'brand', title: 'Help', sub: 'Get support and FAQs', href: '/support' },
   ];
