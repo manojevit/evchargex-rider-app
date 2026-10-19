@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import {
@@ -17,12 +18,20 @@ import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { cardShadow, colors } from '@/lib/theme';
 import { useStore } from '@/lib/store';
 
 export default function Menu() {
   const router = useRouter();
   const { rider, signOut } = useStore();
+  const [confirmOut, setConfirmOut] = useState(false);
+
+  const doSignOut = () => {
+    setConfirmOut(false);
+    signOut();
+    router.replace('/(auth)/login');
+  };
 
   const items: {
     icon: React.ReactNode;
@@ -105,11 +114,9 @@ export default function Menu() {
 
         {/* Log out */}
         <Pressable
-          onPress={() => {
-            signOut();
-            router.replace('/(auth)/login');
-          }}
+          onPress={() => setConfirmOut(true)}
           className="mt-4 flex-row items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft/50 py-4"
+          style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
         >
           <LogOut size={18} color={colors.danger} />
           <Txt weight="bold" className="text-[15px] text-danger">
@@ -125,6 +132,22 @@ export default function Menu() {
           Version 1.0.0 · Demo build
         </Txt>
       </Screen>
+
+      <ConfirmDialog
+        visible={confirmOut}
+        icon={
+          <View className="h-14 w-14 items-center justify-center rounded-full bg-danger-soft">
+            <LogOut size={26} color={colors.danger} />
+          </View>
+        }
+        title="Log out?"
+        message="You’ll need to sign in again with your mobile number to get back in."
+        confirmLabel="Log out"
+        cancelLabel="Stay"
+        destructive
+        onConfirm={doSignOut}
+        onCancel={() => setConfirmOut(false)}
+      />
     </View>
   );
 }
