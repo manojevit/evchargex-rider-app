@@ -56,6 +56,7 @@ export default function RootLayout() {
             <Stack.Screen name="alerts" />
             <Stack.Screen name="tickets" />
             <Stack.Screen name="support" />
+            <Stack.Screen name="about" />
             <Stack.Screen name="settings" />
             <Stack.Screen name="profile" />
             <Stack.Screen name="language" />
