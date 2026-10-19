@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { IconTile } from '@/components/ui/IconTile';
+import { ExportSheet } from '@/components/ExportSheet';
 import { colors } from '@/lib/theme';
 import { dayLabel, timeOnly } from '@/lib/format';
 import { cn } from '@/lib/cn';
@@ -52,9 +53,11 @@ export default function History() {
 
   const filterActive = filter !== 'all' || dateFilter !== 'all';
   const toast = useToast();
+  const [exportOpen, setExportOpen] = useState(false);
 
-  const exportHistory = () => {
-    toast.show(rows.length ? 'Swap history downloaded' : 'No swaps to export', rows.length ? 'success' : 'default');
+  const onDownload = (label: string) => {
+    setExportOpen(false);
+    toast.show(`Statement downloaded · ${label}`, 'success');
   };
 
   // Group rows by day for readable, scannable sections.
@@ -76,7 +79,7 @@ export default function History() {
         right={
           <View className="mr-1 flex-row items-center gap-2">
             <Pressable
-              onPress={exportHistory}
+              onPress={() => setExportOpen(true)}
               hitSlop={6}
               className="h-10 w-10 items-center justify-center rounded-xl border border-border bg-card"
             >
@@ -158,6 +161,8 @@ export default function History() {
           ))
         )}
       </Screen>
+
+      <ExportSheet visible={exportOpen} onClose={() => setExportOpen(false)} onDownload={onDownload} />
     </View>
   );
 }
