@@ -48,7 +48,7 @@ export default function RootLayout() {
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="scan" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
-            <Stack.Screen name="swap/preflight" />
+            <Stack.Screen name="swap/start" options={{ presentation: 'transparentModal', animation: 'fade' }} />
             <Stack.Screen name="swap/live" options={{ gestureEnabled: false }} />
             <Stack.Screen name="station/[id]" />
             <Stack.Screen name="history" />

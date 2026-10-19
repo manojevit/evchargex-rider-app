@@ -99,7 +99,7 @@ export default function Home() {
         {/* Smart nudge — appears when the pack is running low */}
         {vehicle && lowBattery && hero && hero.status === 'online' && (
           <Pressable
-            onPress={() => router.push(`/swap/preflight?station=${hero.id}`)}
+            onPress={() => router.push(`/swap/start?station=${hero.id}`)}
             className="mt-3 flex-row items-center rounded-2xl bg-warn-soft p-4"
             style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
           >
