@@ -21,24 +21,12 @@ const STATUS_WORD: Record<Slot['state'], string> = {
   fault: 'Fault',
 };
 
-/** Plain lock indicator for a slot (open = authorised, otherwise locked). */
-function SlotLock({ open, active, highlight }: { open?: boolean; active: boolean; highlight?: boolean }) {
-  const tint = open || highlight;
-  return (
-    <View
-      style={{
-        width: 34,
-        height: 34,
-        borderRadius: 11,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: tint ? '#EAF1FF' : colors.canvas,
-        borderWidth: 1,
-        borderColor: tint ? colors.brand : colors.line,
-      }}
-    >
-      {open ? <LockOpen size={17} color={colors.brand} /> : <Lock size={17} color={active ? colors.muted : colors.faint} />}
-    </View>
+/** Plain lock icon for a slot (open = authorised, otherwise locked). No background box. */
+function SlotLock({ open, active }: { open?: boolean; active: boolean }) {
+  return open ? (
+    <LockOpen size={18} color={colors.brand} />
+  ) : (
+    <Lock size={18} color={active ? colors.muted : colors.faint} />
   );
 }
 
@@ -52,7 +40,9 @@ function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; 
       {highlight && <View className="absolute -top-1 left-4 right-4 h-1 rounded-full bg-brand-500" />}
       <View className="flex-row items-start justify-between">
         <BatteryRing soc={slot.soc} state={slot.state} size={46} />
-        <SlotLock open={open} active={!empty} highlight={highlight} />
+        <View className="pl-2 pt-0.5">
+          <SlotLock open={open} active={!empty} />
+        </View>
       </View>
       {/* Full battery ID — shrinks to fit the card */}
       <Txt
