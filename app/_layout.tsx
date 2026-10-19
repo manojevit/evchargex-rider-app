@@ -52,8 +52,7 @@ export default function RootLayout() {
             <Stack.Screen name="swap/live" options={{ gestureEnabled: false }} />
             <Stack.Screen name="station/[id]" />
             <Stack.Screen name="history" />
-            <Stack.Screen name="wallet/index" />
-            <Stack.Screen name="wallet/topup" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="subscribe" options={{ presentation: 'modal' }} />
             <Stack.Screen name="alerts" />
             <Stack.Screen name="tickets" />
             <Stack.Screen name="support" />

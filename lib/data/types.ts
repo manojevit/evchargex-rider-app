@@ -68,15 +68,6 @@ export interface AppAlert {
   read: boolean;
 }
 
-export interface LedgerEntry {
-  id: string;
-  direction: 'credit' | 'debit';
-  amount_rupees: number;
-  type: 'topup' | 'swap_fee' | 'plan_purchase' | 'refund' | 'adjustment';
-  note: string;
-  at: string;
-}
-
 export interface Plan {
   code: string;
   name: string; // Unlimited Monthly
@@ -127,8 +118,6 @@ export interface AccountSnapshot {
   vehicle: Vehicle | null;
   plan: Plan | null;
   swaps_today: number;
-  wallet_balance_rupees: number;
   history: SwapHistoryRow[];
   alerts: AppAlert[];
-  ledger: LedgerEntry[];
 }

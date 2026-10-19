@@ -8,7 +8,6 @@ import {
   LogOut,
   Settings,
   Clock,
-  Wallet,
 } from 'lucide-react-native';
 import { Logo } from '@/components/Logo';
 import { Txt } from '@/components/ui/Txt';
@@ -33,7 +32,6 @@ export default function Menu() {
   }[] = [
     { icon: <Clock size={22} color={colors.brand} />, tone: 'brand', title: 'Swap history', sub: 'View your past swaps', href: '/history' },
     { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription & plan', sub: 'Your plan, benefits & billing', href: '/(tabs)/plan' },
-    { icon: <Wallet size={22} color={colors.success} />, tone: 'success', title: 'Wallet', sub: 'Balance & transactions', href: '/wallet' },
     { icon: <LifeBuoy size={22} color={colors.warn} />, tone: 'warn', title: 'Raise a ticket', sub: 'Report an issue or get help', href: '/tickets' },
     { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
     { icon: <HelpCircle size={22} color={colors.brand} />, tone: 'brand', title: 'Help', sub: 'Get support and FAQs', href: '/support' },

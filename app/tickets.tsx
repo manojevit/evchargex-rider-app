@@ -4,10 +4,10 @@ import { MotiView } from '@/lib/motion';
 import {
   BatteryWarning,
   CircleHelp,
+  CreditCard,
   LifeBuoy,
   MapPin,
   Smartphone,
-  Wallet,
   Zap,
   type LucideIcon,
 } from 'lucide-react-native';
@@ -28,7 +28,7 @@ import type { Ticket } from '@/lib/data/types';
 
 const CAT_ICON: Record<string, LucideIcon> = {
   'Swap issue': Zap,
-  'Payment & wallet': Wallet,
+  'Payment & billing': CreditCard,
   'Battery / pack': BatteryWarning,
   'Station problem': MapPin,
   'App / account': Smartphone,

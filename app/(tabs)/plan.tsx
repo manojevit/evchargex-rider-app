@@ -1,5 +1,6 @@
 import { Pressable, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import { MotiView } from '@/lib/motion';
 import {
   BadgeCheck,
@@ -202,8 +203,7 @@ function ActivePlan() {
 
 function NoPlan() {
   const plan = PLAN;
-  const toast = useToast();
-  const { setPersona } = useStore();
+  const router = useRouter();
   return (
     <>
       <Card className="items-center py-8">
@@ -251,13 +251,7 @@ function NoPlan() {
       </MotiView>
 
       <View className="mt-4">
-        <Button
-          label="Subscribe now"
-          onPress={() => {
-            setPersona('rich');
-            toast.show('Unlimited Monthly activated 🎉', 'success');
-          }}
-        />
+        <Button label="Subscribe now" onPress={() => router.push('/subscribe')} />
       </View>
       <Txt weight="medium" className="mt-3 text-center text-[12.5px] text-muted">
         Tip: you can also flip accounts from Menu → Settings.
