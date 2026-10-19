@@ -10,7 +10,7 @@ import { colors, cardShadow } from '@/lib/theme';
 import type { Station } from '@/lib/data/types';
 
 /** Full-height station photo that fills the left side of the card (flush to the edges). */
-function StationPhoto({ station, width, online, fade }: { station: Station; width: number; online: boolean; fade?: boolean }) {
+function StationPhoto({ station, width, online, fade, nearest }: { station: Station; width: number; online: boolean; fade?: boolean; nearest?: boolean }) {
   const [err, setErr] = useState(false);
   const uri = station.images?.[0]?.uri;
   const bg = online ? '#E6F4EC' : '#F2F5F9';
@@ -42,14 +42,25 @@ function StationPhoto({ station, width, online, fade }: { station: Station; widt
           pointerEvents="none"
         />
       )}
+
+      {nearest && (
+        <View style={{ position: 'absolute', top: 8, left: 8 }} className="rounded-full bg-brand-500 px-2.5 py-1">
+          <Txt weight="black" className="text-[9.5px]" style={{ color: '#fff', letterSpacing: 0.4 }}>
+            NEAREST
+          </Txt>
+        </View>
+      )}
     </View>
   );
 }
 
 /** Full-width list card used on the Stations screen and Home "Swap near you". */
-export function StationCard({ station, fade }: { station: Station; fade?: boolean }) {
+export function StationCard({ station, fade, nearest }: { station: Station; fade?: boolean; nearest?: boolean }) {
   const router = useRouter();
   const online = station.status === 'online';
+  const distanceLine = !online
+    ? 'Not reporting'
+    : `${station.distance_km} km${station.eta_mins != null ? ` · ${station.eta_mins} min` : ''}`;
 
   return (
     <Pressable
@@ -57,29 +68,26 @@ export function StationCard({ station, fade }: { station: Station; fade?: boolea
       className="mb-3 flex-row overflow-hidden rounded-2xl bg-surface"
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
-      <StationPhoto station={station} width={120} online={online} fade={fade} />
-      <View className="flex-1 p-3.5">
+      <StationPhoto station={station} width={120} online={online} fade={fade} nearest={nearest} />
+      <View className="flex-1 justify-center p-3.5">
         <View className="flex-row items-center justify-between">
           <Txt weight="extrabold" className="flex-1 pr-2 text-[16.5px] text-foreground" numberOfLines={1}>
             {station.code}
           </Txt>
           <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
         </View>
-        <Txt weight="medium" className="mt-0.5 text-[13px] text-muted" numberOfLines={1}>
+        <Txt weight="semibold" className="mt-0.5 text-[13.5px] text-ink" numberOfLines={1}>
           {station.name}
         </Txt>
-        <View className="mt-1 flex-row items-center gap-1">
-          <MapPin size={12} color={colors.faint} />
-          <Txt weight="regular" className="flex-1 text-[12px] text-faint" numberOfLines={1}>
-            {station.area}, {station.city}
-          </Txt>
-        </View>
-        <View className="mt-2.5 flex-row items-center justify-between">
-          <View className="flex-row items-center gap-2.5">
-            <Badge tone="brand" label={`${station.distance_km} km`} />
-            <BatteryCount count={station.charged} active={online} size="md" />
+        <View className="mt-2 flex-row items-center">
+          <View className="flex-1 flex-row items-center gap-1 pr-2">
+            <MapPin size={12} color={colors.faint} />
+            <Txt weight="medium" className="flex-1 text-[12px] text-muted" numberOfLines={1}>
+              {distanceLine}
+            </Txt>
           </View>
-          <ChevronRight size={20} color={colors.faint} />
+          <BatteryCount count={station.charged} active={online} size="md" />
+          <ChevronRight size={18} color={colors.faint} style={{ marginLeft: 6 }} />
         </View>
       </View>
     </Pressable>

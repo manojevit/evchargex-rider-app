@@ -127,7 +127,7 @@ export default function Stations() {
               </Txt>
             </View>
           ) : (
-            list.map((s) => <StationCard key={s.id} station={s} fade />)
+            list.map((s, i) => <StationCard key={s.id} station={s} fade nearest={i === 0 && sort === 'nearest' && s.status === 'online'} />)
           )}
         </Screen>
       ) : (
@@ -138,8 +138,8 @@ export default function Stations() {
           <Txt weight="black" className="mb-2 mt-5 text-[17px] text-foreground">
             {list.length} {list.length === 1 ? 'station' : 'stations'} nearby
           </Txt>
-          {list.map((s) => (
-            <StationCard key={s.id} station={s} fade />
+          {list.map((s, i) => (
+            <StationCard key={s.id} station={s} fade nearest={i === 0 && sort === 'nearest' && s.status === 'online'} />
           ))}
         </Screen>
       )}

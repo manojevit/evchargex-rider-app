@@ -60,7 +60,7 @@ export default function StationDetail() {
   return (
     <View className="flex-1 bg-canvas">
       <AppBar
-        title={station.name}
+        title={station.code}
         back
         right={
           <View className="mr-2 flex-row items-center gap-2">
@@ -92,7 +92,13 @@ export default function StationDetail() {
           </Txt>
         </View>
 
-        <View className="mt-3 flex-row gap-2">
+        <View className="mt-3 flex-row flex-wrap gap-2">
+          <View className="flex-row items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5">
+            <Navigation size={12} color={colors.brand} fill={colors.brand} />
+            <Txt weight="bold" className="text-[12px] text-brand-700">
+              {station.distance_km} km{station.eta_mins != null ? ` · ${station.eta_mins} min` : ''}
+            </Txt>
+          </View>
           <View className="flex-row items-center gap-1.5 rounded-full bg-card px-3 py-1.5 border border-border">
             <Clock size={13} color={colors.muted} />
             <Txt weight="bold" className="text-[12px] text-foreground">
