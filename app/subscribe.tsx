@@ -109,12 +109,45 @@ export default function Subscribe() {
             Cancel anytime. No per-swap charges, ever.
           </Txt>
         </View>
+
+        {/* What happens next */}
+        <View className="mt-5 flex-row items-center gap-3 rounded-2xl border border-border bg-card p-4">
+          <View className="h-10 w-10 items-center justify-center rounded-xl bg-brand-50">
+            {method === 'upi' ? <Smartphone size={20} color={colors.brand} /> : <CreditCard size={20} color={colors.brand} />}
+          </View>
+          <Txt weight="medium" className="flex-1 text-[13px] leading-5 text-ink">
+            {method === 'upi'
+              ? `You’ll get a ${rupees(PLAN.price_rupees)} request in your UPI app to approve.`
+              : 'You’ll enter your card details securely on the next step.'}
+          </Txt>
+        </View>
+
+        {/* Billing summary */}
+        <View className="mt-3 rounded-2xl border border-border bg-card p-4">
+          <Row label="Unlimited Monthly" value={rupees(PLAN.price_rupees)} />
+          <View className="my-2.5 h-px bg-line" />
+          <Row label="Renews on" value={PLAN.renews_on} muted />
+          <Row label="Billing" value="Monthly · auto-pay" muted />
+        </View>
       </View>
 
       <View className="flex-1" />
       <View className="px-5" style={{ paddingBottom: insets.bottom + 16 }}>
         <Button label={`Pay ${rupees(PLAN.price_rupees)}`} onPress={pay} />
       </View>
+    </View>
+  );
+}
+
+function Row({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <View className="flex-row items-center justify-between">
+      <Txt weight="medium" className="text-[13px] text-muted">
+        {label}
+      </Txt>
+      <Txt weight={muted ? 'semibold' : 'black'} className={cn('text-[13.5px]', muted ? 'text-ink' : 'text-ink')}>
+        {value}
+      </Txt>
     </View>
   );
 }
