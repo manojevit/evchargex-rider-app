@@ -13,14 +13,6 @@ import { tap } from '@/lib/haptics';
 const LANGUAGES = [
   { name: 'English', native: 'English' },
   { name: 'Hindi', native: 'हिन्दी' },
-  { name: 'Bengali', native: 'বাংলা' },
-  { name: 'Marathi', native: 'मराठी' },
-  { name: 'Telugu', native: 'తెలుగు' },
-  { name: 'Tamil', native: 'தமிழ்' },
-  { name: 'Gujarati', native: 'ગુજરાતી' },
-  { name: 'Kannada', native: 'ಕನ್ನಡ' },
-  { name: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
-  { name: 'Malayalam', native: 'മലയാളം' },
 ];
 
 export default function Language() {
