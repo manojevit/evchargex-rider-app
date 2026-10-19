@@ -13,7 +13,7 @@ import type { Station } from '@/lib/data/types';
 function StationPhoto({ station, width, online, fade }: { station: Station; width: number; online: boolean; fade?: boolean }) {
   const [err, setErr] = useState(false);
   const uri = station.images?.[0]?.uri;
-  const bg = fade ? '#FFFFFF' : online ? '#E6F4EC' : '#F2F5F9';
+  const bg = online ? '#E6F4EC' : '#F2F5F9';
   return (
     <View style={{ width, alignSelf: 'stretch', backgroundColor: bg }}>
       {uri && !err ? (
@@ -29,12 +29,13 @@ function StationPhoto({ station, width, online, fade }: { station: Station; widt
         </View>
       )}
 
-      {/* Horizontal edge-fade: left & right edges melt into the white card; center stays sharp.
-          Uses rgba(255,255,255,0) (not "transparent") so there's no grey boundary. */}
+      {/* Soft right-edge fade: the photo stays crisp and flush on the left, and only its
+          right edge melts into the white card so there's no hard seam. rgba(255,255,255,0)
+          (not "transparent") keeps the blend free of any grey boundary. */}
       {fade && (
         <LinearGradient
-          colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)', 'rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-          locations={[0, 0.24, 0.76, 1]}
+          colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+          locations={[0, 0.58, 1]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
@@ -56,7 +57,7 @@ export function StationCard({ station, fade }: { station: Station; fade?: boolea
       className="mb-3 flex-row overflow-hidden rounded-2xl bg-surface"
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
-      <StationPhoto station={station} width={112} online={online} fade={fade} />
+      <StationPhoto station={station} width={120} online={online} fade={fade} />
       <View className="flex-1 p-3.5">
         <View className="flex-row items-center justify-between">
           <Txt weight="extrabold" className="flex-1 pr-2 text-[16.5px] text-foreground" numberOfLines={1}>
