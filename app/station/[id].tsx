@@ -5,6 +5,7 @@ import {
   BatteryFull,
   BatteryWarning,
   Bookmark,
+  ChevronRight,
   CircleAlert,
   Clock,
   MapPin,
@@ -57,6 +58,12 @@ export default function StationDetail() {
   const empty = station.slots.filter((s) => s.state === 'empty').length;
   const fault = station.slots.filter((s) => s.state === 'fault').length;
 
+  // Open turn-by-turn navigation to this station.
+  const openDirections = () =>
+    Linking.openURL(
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${station.name}, ${station.address}`)}`,
+    );
+
   return (
     <View className="flex-1 bg-canvas">
       <AppBar
@@ -93,12 +100,18 @@ export default function StationDetail() {
         </View>
 
         <View className="mt-3 flex-row flex-wrap gap-2">
-          <View className="flex-row items-center gap-1.5 rounded-full border border-brand-100 bg-brand-50 px-3 py-1.5">
-            <Navigation size={12} color={colors.brand} fill={colors.brand} />
-            <Txt weight="bold" className="text-[12px] text-brand-700">
+          <Pressable
+            onPress={openDirections}
+            hitSlop={6}
+            className="flex-row items-center gap-1.5 rounded-full border border-brand-200 bg-brand-500 px-3 py-1.5"
+            style={({ pressed }) => (pressed ? { opacity: 0.88 } : undefined)}
+          >
+            <Navigation size={12} color="#fff" fill="#fff" />
+            <Txt weight="bold" className="text-[12px] text-white" style={{ color: '#fff' }}>
               {station.distance_km} km{station.eta_mins != null ? ` · ${station.eta_mins} min` : ''}
             </Txt>
-          </View>
+            <ChevronRight size={13} color="rgba(255,255,255,0.9)" />
+          </Pressable>
           <View className="flex-row items-center gap-1.5 rounded-full bg-card px-3 py-1.5 border border-border">
             <Clock size={13} color={colors.muted} />
             <Txt weight="bold" className="text-[12px] text-foreground">
@@ -160,11 +173,7 @@ export default function StationDetail() {
         )}
         <View className="flex-row items-center gap-3">
           <Pressable
-            onPress={() =>
-              Linking.openURL(
-                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${station.name}, ${station.address}`)}`,
-              )
-            }
+            onPress={openDirections}
             className="h-14 w-14 items-center justify-center rounded-2xl border border-brand-500 bg-card"
             style={({ pressed }) => (pressed ? { opacity: 0.85 } : undefined)}
           >
