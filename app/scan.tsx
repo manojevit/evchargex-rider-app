@@ -36,7 +36,7 @@ export default function Scan() {
     if (handled.current) return;
     handled.current = true;
     setFound(true);
-    setTimeout(() => router.replace(`/swap/preflight?station=${TARGET.id}`), 750);
+    setTimeout(() => router.replace(`/swap/start?station=${TARGET.id}`), 750);
   };
 
   const header = (

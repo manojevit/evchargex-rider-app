@@ -145,7 +145,7 @@ export default function StationDetail() {
               label="Start swap"
               disabled={!online}
               leftIcon={<Zap size={18} color="#fff" fill="#fff" />}
-              onPress={() => router.push(`/swap/preflight?station=${station.id}`)}
+              onPress={() => router.push(`/swap/start?station=${station.id}`)}
             />
           </View>
         </View>
