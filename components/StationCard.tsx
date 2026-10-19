@@ -29,13 +29,23 @@ function StationPhoto({ station, width, online, fade, nearest }: { station: Stat
         </View>
       )}
 
-      {/* Soft right-edge fade: the photo stays crisp and flush on the left, and only its
-          right edge melts into the white card so there's no hard seam. rgba(255,255,255,0)
-          (not "transparent") keeps the blend free of any grey boundary. */}
+      {/* Smooth right-edge dissolve: the photo is crisp and flush on the left and melts
+          gradually into the white card on the right. Many closely-spaced stops with an
+          ease-out curve mean there's no visible "start line" to the fade — the image and
+          the card read as one surface. rgba(255,255,255,0) (not "transparent") avoids any
+          grey tint in the blend. */}
       {fade && (
         <LinearGradient
-          colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-          locations={[0, 0.58, 1]}
+          colors={[
+            'rgba(255,255,255,0)',
+            'rgba(255,255,255,0.03)',
+            'rgba(255,255,255,0.12)',
+            'rgba(255,255,255,0.3)',
+            'rgba(255,255,255,0.56)',
+            'rgba(255,255,255,0.82)',
+            'rgba(255,255,255,1)',
+          ]}
+          locations={[0, 0.3, 0.48, 0.64, 0.78, 0.9, 1]}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
           style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
@@ -80,14 +90,14 @@ export function StationCard({ station, fade, nearest }: { station: Station; fade
           {station.name}
         </Txt>
         <View className="mt-2 flex-row items-center">
-          <View className="flex-1 flex-row items-center gap-1 pr-2">
+          <View className="flex-1 flex-row items-center gap-1 pr-1.5">
             <MapPin size={12} color={colors.faint} />
-            <Txt weight="medium" className="flex-1 text-[12px] text-muted" numberOfLines={1}>
+            <Txt weight="medium" className="flex-1 text-[12px] text-muted" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
               {distanceLine}
             </Txt>
           </View>
           <BatteryCount count={station.charged} active={online} size="md" />
-          <ChevronRight size={18} color={colors.faint} style={{ marginLeft: 6 }} />
+          <ChevronRight size={18} color={colors.faint} style={{ marginLeft: 4 }} />
         </View>
       </View>
     </Pressable>
@@ -104,7 +114,7 @@ export function StationRowCompact({ station }: { station: Station }) {
       className="mb-2.5 flex-row overflow-hidden rounded-2xl border border-border bg-surface"
       style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
     >
-      <StationPhoto station={station} width={92} online={online} />
+      <StationPhoto station={station} width={100} online={online} />
       <View className="flex-1 p-3">
         <View className="flex-row items-center gap-2">
           <Txt weight="bold" className="text-[15px] text-ink" numberOfLines={1}>
@@ -115,15 +125,15 @@ export function StationRowCompact({ station }: { station: Station }) {
         <Txt weight="medium" className="mt-0.5 text-[12.5px] text-muted" numberOfLines={1}>
           {station.name}
         </Txt>
-        <View className="mt-1 flex-row items-center gap-1">
-          <MapPin size={11} color={colors.faint} />
-          <Txt weight="regular" className="flex-1 text-[11.5px] text-faint" numberOfLines={1}>
-            {station.distance_km} km · {station.eta_mins} mins away
-          </Txt>
+        <View className="mt-2 flex-row items-end justify-between">
+          <View className="flex-1 flex-row items-center gap-1 pr-1.5">
+            <MapPin size={11} color={colors.faint} />
+            <Txt weight="regular" className="flex-1 text-[11.5px] text-faint" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
+              {online ? `${station.distance_km} km · ${station.eta_mins} min` : 'Not reporting'}
+            </Txt>
+          </View>
+          <BatteryCount count={station.charged} active={online} size="md" />
         </View>
-      </View>
-      <View className="items-center justify-center pl-1 pr-3.5">
-        <BatteryCount count={station.charged} active={online} size="lg" />
       </View>
     </Pressable>
   );
