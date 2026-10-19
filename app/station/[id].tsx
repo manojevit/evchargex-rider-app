@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import {
   BatteryFull,
   BatteryWarning,
+  Bookmark,
   CircleAlert,
   Clock,
   MapPin,
@@ -19,12 +20,17 @@ import { Screen } from '@/components/ui/Screen';
 import { CabinetGrid } from '@/components/CabinetGrid';
 import { StationImageCarousel } from '@/components/StationImageCarousel';
 import { colors } from '@/lib/theme';
+import { cn } from '@/lib/cn';
 import { getStation } from '@/lib/data/stations';
+import { useStore } from '@/lib/store';
+import { useToast } from '@/lib/toast';
 
 export default function StationDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { isSaved, toggleSaved } = useStore();
+  const toast = useToast();
   const station = getStation(id);
 
   if (!station) {
@@ -41,6 +47,11 @@ export default function StationDetail() {
   }
 
   const online = station.status === 'online';
+  const saved = isSaved(station.id);
+  const onToggleSave = () => {
+    toggleSaved(station.id);
+    toast.show(saved ? 'Removed from saved' : 'Saved to your stations', 'success');
+  };
   const available = station.slots.filter((s) => s.state === 'charged').length;
   const empty = station.slots.filter((s) => s.state === 'empty').length;
   const fault = station.slots.filter((s) => s.state === 'fault').length;
@@ -51,7 +62,14 @@ export default function StationDetail() {
         title={station.name}
         back
         right={
-          <View className="mr-2">
+          <View className="mr-2 flex-row items-center gap-2">
+            <Pressable
+              onPress={onToggleSave}
+              hitSlop={8}
+              className={cn('h-9 w-9 items-center justify-center rounded-full border', saved ? 'border-brand-200 bg-brand-50' : 'border-border bg-card')}
+            >
+              <Bookmark size={17} color={saved ? colors.brand : colors.muted} fill={saved ? colors.brand : 'transparent'} />
+            </Pressable>
             <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
           </View>
         }
