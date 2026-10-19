@@ -4,6 +4,7 @@ import {
   ChevronRight,
   CreditCard,
   HelpCircle,
+  Info,
   LifeBuoy,
   LogOut,
   Settings,
@@ -35,6 +36,7 @@ export default function Menu() {
     { icon: <LifeBuoy size={22} color={colors.warn} />, tone: 'warn', title: 'Raise a ticket', sub: 'Report an issue or get help', href: '/tickets' },
     { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
     { icon: <HelpCircle size={22} color={colors.brand} />, tone: 'brand', title: 'Help', sub: 'Get support and FAQs', href: '/support' },
+    { icon: <Info size={22} color={colors.info} />, tone: 'info', title: 'About & legal', sub: 'Version, terms & privacy', href: '/about' },
   ];
 
   return (
