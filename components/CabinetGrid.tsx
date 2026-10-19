@@ -21,16 +21,15 @@ const STATUS_WORD: Record<Slot['state'], string> = {
   fault: 'Fault',
 };
 
-/** A larger padlock that shows the slot number on it (no separate "Slot N" text). */
-function SlotLock({ n, open, active, highlight }: { n: number; open?: boolean; active: boolean; highlight?: boolean }) {
+/** Plain lock indicator for a slot (open = authorised, otherwise locked). */
+function SlotLock({ open, active, highlight }: { open?: boolean; active: boolean; highlight?: boolean }) {
   const tint = open || highlight;
-  const numberColor = open ? colors.brand : active ? colors.ink : colors.faint;
   return (
     <View
       style={{
-        width: 40,
-        borderRadius: 12,
-        paddingVertical: 4,
+        width: 34,
+        height: 34,
+        borderRadius: 11,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: tint ? '#EAF1FF' : colors.canvas,
@@ -39,9 +38,6 @@ function SlotLock({ n, open, active, highlight }: { n: number; open?: boolean; a
       }}
     >
       {open ? <LockOpen size={17} color={colors.brand} /> : <Lock size={17} color={active ? colors.muted : colors.faint} />}
-      <Txt weight="black" style={{ marginTop: 1, fontSize: 14, lineHeight: 16, color: numberColor }}>
-        {n}
-      </Txt>
     </View>
   );
 }
@@ -56,7 +52,7 @@ function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; 
       {highlight && <View className="absolute -top-1 left-4 right-4 h-1 rounded-full bg-brand-500" />}
       <View className="flex-row items-start justify-between">
         <BatteryRing soc={slot.soc} state={slot.state} size={46} />
-        <SlotLock n={slot.slot_number} open={open} active={!empty} highlight={highlight} />
+        <SlotLock open={open} active={!empty} highlight={highlight} />
       </View>
       {/* Full battery ID — shrinks to fit the card */}
       <Txt
@@ -70,8 +66,8 @@ function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; 
       </Txt>
       <View className="mt-1 flex-row items-center gap-1.5">
         <View className={cn('h-2 w-2 rounded-full', DOT[slot.state])} />
-        <Txt weight="semibold" className="text-[10.5px] text-faint">
-          {STATUS_WORD[slot.state]}
+        <Txt weight="bold" className="flex-1 text-[10.5px] text-ink" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+          Slot {slot.slot_number} · {STATUS_WORD[slot.state]}
         </Txt>
       </View>
     </MotiView>
