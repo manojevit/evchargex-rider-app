@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import {
   Bike,
   Building2,
   CalendarDays,
+  Check,
   Hash,
   Lock,
+  Mail,
   Phone,
   User,
   Zap,
@@ -26,18 +28,35 @@ import { useToast } from '@/lib/toast';
 export default function Profile() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { rider, account, updateName } = useStore();
+  const { rider, account, updateName, email: savedEmail, emailVerified, updateEmail, verifyEmail } = useStore();
   const toast = useToast();
 
   const [name, setName] = useState(rider.name);
   const [focused, setFocused] = useState(false);
-  const changed = name.trim().length > 0 && name.trim() !== rider.name;
+  const [email, setEmail] = useState(savedEmail);
+  const [emailFocused, setEmailFocused] = useState(false);
+
+  const emailTrim = email.trim();
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim);
+  const emailChanged = emailTrim !== savedEmail;
+  const isVerified = emailVerified && !emailChanged && emailTrim.length > 0;
+
+  const nameChanged = name.trim().length > 0 && name.trim() !== rider.name;
+  const changed = nameChanged || emailChanged;
   const vehicle = account.vehicle;
 
   const save = () => {
-    updateName(name);
+    if (nameChanged) updateName(name);
+    if (emailChanged) updateEmail(email);
     toast.show('Profile updated', 'success');
     router.back();
+  };
+
+  const verify = () => {
+    if (!validEmail) return;
+    if (emailChanged) updateEmail(email);
+    verifyEmail();
+    toast.show('Email verified — you’ll get updates', 'success');
   };
 
   return (
@@ -84,6 +103,48 @@ export default function Profile() {
         </View>
         <Txt weight="medium" className="mt-2 text-[12px] text-muted">
           Your mobile number can’t be changed. Contact support if it’s wrong.
+        </Txt>
+
+        {/* Email — editable + verifiable */}
+        <Txt weight="semibold" className="mb-2 mt-5 text-[13px] text-muted">
+          Email address
+        </Txt>
+        <View className={cn('h-14 flex-row items-center rounded-2xl border bg-card px-4', emailFocused ? 'border-brand-500' : 'border-border')}>
+          <Mail size={18} color={colors.muted} />
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
+            placeholder="you@email.com"
+            placeholderTextColor={colors.faint}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            maxLength={60}
+            style={{ flex: 1, marginLeft: 12, fontFamily: 'Inter_600SemiBold', fontSize: 16, color: colors.ink }}
+          />
+          {isVerified ? (
+            <View className="flex-row items-center gap-1 rounded-full bg-success-soft px-2.5 py-1">
+              <View className="h-4 w-4 items-center justify-center rounded-full bg-success">
+                <Check size={11} color="#fff" strokeWidth={3} />
+              </View>
+              <Txt weight="bold" className="text-[12px] text-success-ink">
+                Verified
+              </Txt>
+            </View>
+          ) : validEmail ? (
+            <Pressable onPress={verify} hitSlop={8} className="rounded-full bg-brand-500 px-3.5 py-1.5">
+              <Txt weight="bold" className="text-[12.5px] text-white" style={{ color: '#fff' }}>
+                Verify
+              </Txt>
+            </Pressable>
+          ) : null}
+        </View>
+        <Txt weight="medium" className="mt-2 text-[12px] text-muted">
+          {isVerified
+            ? 'You’ll get swap receipts and plan updates at this address.'
+            : 'Add your email and verify it to receive swap & plan updates.'}
         </Txt>
 
         {/* Account */}

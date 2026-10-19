@@ -24,6 +24,11 @@ interface StoreValue {
   updateName: (name: string) => void;
   account: AccountSnapshot;
 
+  email: string;
+  emailVerified: boolean;
+  updateEmail: (email: string) => void;
+  verifyEmail: () => void;
+
   language: string;
   setLanguage: (lang: string) => void;
 
@@ -40,9 +45,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
   const [riderName, setRiderName] = useState(RIDER.name);
   const [language, setLanguage] = useState('English');
+  const [email, setEmail] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
 
   const rider = useMemo<Rider>(() => ({ ...RIDER, name: riderName }), [riderName]);
   const updateName = useCallback((name: string) => setRiderName(name.trim() || RIDER.name), []);
+
+  // Editing the email always drops its verified status until re-verified.
+  const updateEmail = useCallback((next: string) => {
+    setEmail((prev) => {
+      if (prev !== next.trim()) setEmailVerified(false);
+      return next.trim();
+    });
+  }, []);
+  const verifyEmail = useCallback(() => setEmailVerified(true), []);
 
   const setPersona = useCallback((p: Persona) => {
     setPersonaState(p);
@@ -90,6 +106,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     rider,
     updateName,
     account,
+    email,
+    emailVerified,
+    updateEmail,
+    verifyEmail,
     language,
     setLanguage,
     unreadAlerts,
