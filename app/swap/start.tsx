@@ -96,13 +96,13 @@ export default function SwapStart() {
           <SlotRow
             tone="brand"
             icon={<ArrowDownToLine size={20} color={colors.brand} />}
-            label="Put your empty battery in"
+            label="Put empty battery in"
             slot={returnSlot}
           />
           <SlotRow
             tone="success"
             icon={<ArrowUpFromLine size={20} color={colors.success} />}
-            label="Take your full battery from"
+            label="Take full battery from"
             slot={dispense?.slot_number ?? returnSlot}
           />
         </View>
@@ -145,7 +145,7 @@ function SlotRow({
       <View className={`h-11 w-11 items-center justify-center rounded-xl ${tone === 'brand' ? 'bg-brand-50' : 'bg-success-soft'}`}>
         {icon}
       </View>
-      <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-ink">
+      <Txt weight="semibold" className="ml-3 flex-1 text-[14px] text-ink" numberOfLines={1}>
         {label}
       </Txt>
       <View className={`rounded-xl px-3 py-1.5 ${tone === 'brand' ? 'bg-brand-500' : 'bg-success'}`}>
