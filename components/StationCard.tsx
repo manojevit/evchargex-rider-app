@@ -4,36 +4,34 @@ import { useRouter } from 'expo-router';
 import { BatteryFull, ChevronRight, MapPin } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Badge } from '@/components/ui/Badge';
-import { colors } from '@/lib/theme';
-import { cardShadow } from '@/lib/theme';
-import { cn } from '@/lib/cn';
+import { BatteryCount } from '@/components/ui/BatteryCount';
+import { colors, cardShadow } from '@/lib/theme';
 import type { Station } from '@/lib/data/types';
 
-/** Station photo thumbnail, with a branded battery-glyph fallback. */
-function StationThumb({ station, size, online }: { station: Station; size: number; online: boolean }) {
+/** Full-height station photo that fills the left side of the card (flush to the edges). */
+function StationPhoto({ station, width, online }: { station: Station; width: number; online: boolean }) {
   const [err, setErr] = useState(false);
   const uri = station.images?.[0]?.uri;
-  if (!uri || err) {
-    return (
-      <View
-        className={cn('items-center justify-center', online ? 'bg-success-soft' : 'bg-canvas')}
-        style={{ width: size, height: size, borderRadius: 18 }}
-      >
-        <BatteryFull size={size > 60 ? 32 : 26} color={online ? colors.success : colors.faint} strokeWidth={2} />
-      </View>
-    );
-  }
+  const bg = online ? '#E6F4EC' : '#F2F5F9';
   return (
-    <Image
-      source={{ uri }}
-      style={{ width: size, height: size, borderRadius: 18, backgroundColor: online ? '#E6F4EC' : '#F2F5F9' }}
-      resizeMode="cover"
-      onError={() => setErr(true)}
-    />
+    <View style={{ width, alignSelf: 'stretch', backgroundColor: bg }}>
+      {uri && !err ? (
+        <Image
+          source={{ uri }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, width }}
+          resizeMode="cover"
+          onError={() => setErr(true)}
+        />
+      ) : (
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}>
+          <BatteryFull size={30} color={online ? colors.success : colors.faint} strokeWidth={2} />
+        </View>
+      )}
+    </View>
   );
 }
 
-/** Full-width list card used on the Stations screen. */
+/** Full-width list card used on the Stations screen and Home "Swap near you". */
 export function StationCard({ station }: { station: Station }) {
   const router = useRouter();
   const online = station.status === 'online';
@@ -41,43 +39,33 @@ export function StationCard({ station }: { station: Station }) {
   return (
     <Pressable
       onPress={() => router.push(`/station/${station.id}`)}
-      className="mb-3 rounded-2xl bg-surface p-4"
+      className="mb-3 flex-row overflow-hidden rounded-2xl bg-surface"
       style={({ pressed }) => [cardShadow, pressed && { opacity: 0.9 }]}
     >
-      <View className="flex-row items-center">
-        <StationThumb station={station} size={72} online={online} />
-        <View className="ml-3.5 flex-1">
-          <View className="flex-row items-center justify-between">
-            <Txt weight="extrabold" className="text-[17px] text-foreground">
-              {station.code}
-            </Txt>
-            <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
-          </View>
-          <Txt weight="medium" className="mt-0.5 text-[13px] text-muted">
-            {station.name}
+      <StationPhoto station={station} width={112} online={online} />
+      <View className="flex-1 p-3.5">
+        <View className="flex-row items-center justify-between">
+          <Txt weight="extrabold" className="flex-1 pr-2 text-[16.5px] text-foreground" numberOfLines={1}>
+            {station.code}
           </Txt>
-          <View className="mt-1 flex-row items-center gap-1">
-            <MapPin size={12} color={colors.faint} />
-            <Txt weight="regular" className="text-[12px] text-faint" numberOfLines={1}>
-              {station.area}, {station.city}
-            </Txt>
-          </View>
+          <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'Online' : 'Offline'} />
         </View>
-      </View>
-
-      <View className="mt-3 flex-row items-center justify-between">
-        <View className="flex-row items-center gap-3">
-          <Badge tone="brand" label={`${station.distance_km} km`} />
-          <View className="flex-row items-center gap-1.5">
-            <View className={cn('h-6 w-6 items-center justify-center rounded-lg', online ? 'bg-success-soft' : 'bg-canvas')}>
-              <BatteryFull size={14} color={online ? colors.success : colors.faint} />
-            </View>
-            <Txt weight="bold" className={cn('text-[13px]', online ? 'text-success-ink' : 'text-faint')}>
-              {online ? `${station.charged} available` : 'Not reporting'}
-            </Txt>
-          </View>
+        <Txt weight="medium" className="mt-0.5 text-[13px] text-muted" numberOfLines={1}>
+          {station.name}
+        </Txt>
+        <View className="mt-1 flex-row items-center gap-1">
+          <MapPin size={12} color={colors.faint} />
+          <Txt weight="regular" className="flex-1 text-[12px] text-faint" numberOfLines={1}>
+            {station.area}, {station.city}
+          </Txt>
         </View>
-        <ChevronRight size={20} color={colors.faint} />
+        <View className="mt-2.5 flex-row items-center justify-between">
+          <View className="flex-row items-center gap-2.5">
+            <Badge tone="brand" label={`${station.distance_km} km`} />
+            <BatteryCount count={station.charged} active={online} size="md" />
+          </View>
+          <ChevronRight size={20} color={colors.faint} />
+        </View>
       </View>
     </Pressable>
   );
@@ -90,13 +78,13 @@ export function StationRowCompact({ station }: { station: Station }) {
   return (
     <Pressable
       onPress={() => router.push(`/station/${station.id}`)}
-      className="mb-2.5 flex-row items-center rounded-2xl border border-border bg-surface p-3"
+      className="mb-2.5 flex-row overflow-hidden rounded-2xl border border-border bg-surface"
       style={({ pressed }) => (pressed ? { opacity: 0.9 } : undefined)}
     >
-      <StationThumb station={station} size={56} online={online} />
-      <View className="ml-3 flex-1">
+      <StationPhoto station={station} width={92} online={online} />
+      <View className="flex-1 p-3">
         <View className="flex-row items-center gap-2">
-          <Txt weight="bold" className="text-[15px] text-ink">
+          <Txt weight="bold" className="text-[15px] text-ink" numberOfLines={1}>
             {station.code}
           </Txt>
           <Badge tone={online ? 'success' : 'danger'} dot label={online ? 'ONLINE' : 'OFFLINE'} />
@@ -106,20 +94,13 @@ export function StationRowCompact({ station }: { station: Station }) {
         </Txt>
         <View className="mt-1 flex-row items-center gap-1">
           <MapPin size={11} color={colors.faint} />
-          <Txt weight="regular" className="text-[11.5px] text-faint">
+          <Txt weight="regular" className="flex-1 text-[11.5px] text-faint" numberOfLines={1}>
             {station.distance_km} km · {station.eta_mins} mins away
           </Txt>
         </View>
       </View>
-      <View className="ml-2 items-center">
-        <View className={cn('h-12 w-12 items-center justify-center rounded-xl', online ? 'bg-success-soft' : 'bg-canvas')}>
-          <Txt weight="black" className={cn('text-[18px]', online ? 'text-success-ink' : 'text-faint')}>
-            {online ? station.charged : '—'}
-          </Txt>
-        </View>
-        <Txt weight="medium" className="mt-0.5 text-[10px] text-faint">
-          charged
-        </Txt>
+      <View className="items-center justify-center pl-1 pr-3.5">
+        <BatteryCount count={station.charged} active={online} size="lg" />
       </View>
     </Pressable>
   );
