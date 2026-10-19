@@ -27,7 +27,7 @@ export default function Support() {
             We’re here 24 × 7
           </Txt>
           <Txt weight="regular" className="mt-1 text-[13.5px]" style={{ color: 'rgba(255,255,255,0.85)' }}>
-            {SUPPORT.hours} · Priority support for plan members.
+            Call or email anytime — priority support for plan members.
           </Txt>
 
           <View className="mt-4 gap-2.5">

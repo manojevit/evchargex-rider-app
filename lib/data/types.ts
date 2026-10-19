@@ -112,6 +112,16 @@ export interface SupportTopic {
   body: string;
 }
 
+export type TicketStatus = 'open' | 'in_progress' | 'resolved';
+
+export interface Ticket {
+  id: string; // TKT-2041
+  category: string; // one of the support categories
+  body: string;
+  status: TicketStatus;
+  at: string; // ISO timestamp
+}
+
 /** The two demo personas the in-app toggle flips between. */
 export interface AccountSnapshot {
   vehicle: Vehicle | null;
