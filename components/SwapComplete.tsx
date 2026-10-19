@@ -7,8 +7,6 @@ import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { colors } from '@/lib/theme';
-import { rupees } from '@/lib/format';
-import { useStore } from '@/lib/store';
 
 export function SwapComplete({
   stationName,
@@ -23,7 +21,6 @@ export function SwapComplete({
 }) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { account } = useStore();
   const txId = Math.random().toString(16).slice(2, 8).toUpperCase();
 
   const rows: [string, React.ReactNode][] = [
@@ -33,7 +30,6 @@ export function SwapComplete({
     ['Transaction ID', <Txt weight="semibold" className="text-[13px] text-muted">{txId}</Txt>],
     ['Swap time', <Txt weight="bold" className="text-[14px] text-ink">{seconds} sec</Txt>],
     ['Charged', <Txt weight="bold" className="text-[14px] text-success">Included in plan · ₹0</Txt>],
-    ['Wallet balance', <Txt weight="bold" className="text-[14px] text-ink">{rupees(account.wallet_balance_rupees)}</Txt>],
   ];
 
   return (

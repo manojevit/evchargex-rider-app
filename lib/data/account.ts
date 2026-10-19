@@ -1,7 +1,6 @@
 import type {
   AccountSnapshot,
   AppAlert,
-  LedgerEntry,
   Plan,
   Rider,
   SupportTopic,
@@ -13,7 +12,7 @@ import type {
 /** Support ticket categories the rider can raise an issue under. */
 export const TICKET_CATEGORIES = [
   'Swap issue',
-  'Payment & wallet',
+  'Payment & billing',
   'Battery / pack',
   'Station problem',
   'App / account',
@@ -24,8 +23,8 @@ export const TICKET_CATEGORIES = [
 export const TICKETS: Ticket[] = [
   {
     id: 'TKT-2041',
-    category: 'Payment & wallet',
-    body: 'Wallet top-up of ₹500 wasn’t reflecting after a UPI payment.',
+    category: 'Payment & billing',
+    body: 'Plan payment went through on UPI but the app still showed “No active plan”.',
     status: 'resolved',
     at: '2026-10-13T11:20:00+05:30',
   },
@@ -168,14 +167,6 @@ const ALERTS: AppAlert[] = [
     read: false,
   },
   {
-    id: 'al-3',
-    severity: 'warn',
-    title: 'Low wallet balance',
-    body: 'Your balance is ₹501. Top up to keep your swaps uninterrupted.',
-    at: '2026-10-16T21:05:00+05:30',
-    read: false,
-  },
-  {
     id: 'al-4',
     severity: 'info',
     title: 'Plan renews soon',
@@ -191,13 +182,6 @@ const ALERTS: AppAlert[] = [
     at: '2026-10-14T12:00:00+05:30',
     read: true,
   },
-];
-
-const LEDGER: LedgerEntry[] = [
-  { id: 'tx-1', direction: 'debit', amount_rupees: 2499, type: 'plan_purchase', note: 'Unlimited Monthly — Oct', at: '2026-09-29T10:00:00+05:30' },
-  { id: 'tx-2', direction: 'credit', amount_rupees: 3000, type: 'topup', note: 'Added via UPI', at: '2026-09-29T09:58:00+05:30' },
-  { id: 'tx-3', direction: 'debit', amount_rupees: 0, type: 'swap_fee', note: 'Swap at EVIDEMO01 — included in plan', at: '2026-10-16T16:56:00+05:30' },
-  { id: 'tx-4', direction: 'credit', amount_rupees: 2000, type: 'topup', note: 'Added via Card', at: '2026-10-10T19:30:00+05:30' },
 ];
 
 export const SUPPORT = {
@@ -218,10 +202,8 @@ export const RICH: AccountSnapshot = {
   vehicle: VEHICLE,
   plan: PLAN,
   swaps_today: 2,
-  wallet_balance_rupees: 501,
   history: HISTORY,
   alerts: ALERTS,
-  ledger: LEDGER,
 };
 
 /** Faithful empty persona — exactly like sir's current screenshots. */
@@ -229,10 +211,8 @@ export const EMPTY: AccountSnapshot = {
   vehicle: null,
   plan: null,
   swaps_today: 0,
-  wallet_balance_rupees: 0,
   history: [],
   alerts: ALERTS.filter((a) => a.id === 'al-5' || a.id === 'al-2').map((a) => ({ ...a, read: false })),
-  ledger: [],
 };
 
 export { PLAN, VEHICLE };
