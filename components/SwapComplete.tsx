@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -21,7 +22,27 @@ export function SwapComplete({
 }) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const txId = Math.random().toString(16).slice(2, 8).toUpperCase();
+  const txId = useRef(Math.random().toString(16).slice(2, 8).toUpperCase()).current;
+
+  // Auto-return to home after 5s; the Done button does it immediately.
+  const [count, setCount] = useState(5);
+  const navigated = useRef(false);
+
+  const goHome = () => {
+    if (navigated.current) return;
+    navigated.current = true;
+    router.replace('/(tabs)/home');
+  };
+
+  useEffect(() => {
+    const iv = setInterval(() => setCount((c) => Math.max(0, c - 1)), 1000);
+    const t = setTimeout(goHome, 5000);
+    return () => {
+      clearInterval(iv);
+      clearTimeout(t);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const rows: [string, React.ReactNode][] = [
     ['Old battery ID', <Txt weight="bold" className="text-[14px] text-ink">{gaveSerial}</Txt>],
@@ -66,9 +87,19 @@ export function SwapComplete({
       </View>
 
       <View className="px-5" style={{ paddingBottom: insets.bottom + 16 }}>
-        <Button label="Done" onPress={() => router.replace('/(tabs)/home')} />
+        <Txt weight="medium" className="mb-3 text-center text-[12.5px] text-muted">
+          Returning to home in {count}s
+        </Txt>
+        <Button label="Done" onPress={goHome} />
         <View className="mt-3">
-          <Button label="View swap history" variant="ghost" onPress={() => router.replace('/history')} />
+          <Button
+            label="View swap history"
+            variant="ghost"
+            onPress={() => {
+              navigated.current = true;
+              router.replace('/history');
+            }}
+          />
         </View>
       </View>
     </View>
