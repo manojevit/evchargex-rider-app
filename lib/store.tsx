@@ -38,6 +38,10 @@ interface StoreValue {
 
   tickets: Ticket[];
   addTicket: (category: string, body: string) => Ticket;
+
+  savedIds: string[];
+  toggleSaved: (id: string) => void;
+  isSaved: (id: string) => boolean;
 }
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -51,6 +55,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [email, setEmail] = useState('');
   const [emailVerified, setEmailVerified] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>(TICKETS);
+  const [savedIds, setSavedIds] = useState<string[]>(['st-01', 'st-02']);
+
+  const toggleSaved = useCallback((id: string) => {
+    setSavedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, []);
+  const isSaved = useCallback((id: string) => savedIds.includes(id), [savedIds]);
 
   const addTicket = useCallback((category: string, body: string): Ticket => {
     const ticket: Ticket = {
@@ -133,6 +143,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     markAlertRead,
     tickets,
     addTicket,
+    savedIds,
+    toggleSaved,
+    isSaved,
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

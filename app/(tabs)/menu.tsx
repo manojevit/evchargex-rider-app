@@ -1,6 +1,7 @@
 import { Pressable, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import {
+  Bookmark,
   ChevronRight,
   CreditCard,
   HelpCircle,
@@ -32,6 +33,7 @@ export default function Menu() {
     badge?: number;
   }[] = [
     { icon: <Clock size={22} color={colors.brand} />, tone: 'brand', title: 'Swap history', sub: 'View your past swaps', href: '/history' },
+    { icon: <Bookmark size={22} color={colors.success} />, tone: 'success', title: 'Saved stations', sub: 'Your favourite swap points', href: '/saved' },
     { icon: <CreditCard size={22} color={colors.info} />, tone: 'info', title: 'Subscription & plan', sub: 'Your plan, benefits & billing', href: '/(tabs)/plan' },
     { icon: <LifeBuoy size={22} color={colors.warn} />, tone: 'warn', title: 'Raise a ticket', sub: 'Report an issue or get help', href: '/tickets' },
     { icon: <Settings size={22} color="#7C3AED" />, tone: 'violet', title: 'Settings', sub: 'App preferences & demo controls', href: '/settings' },
