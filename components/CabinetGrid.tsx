@@ -14,23 +14,49 @@ const DOT: Record<Slot['state'], string> = {
   fault: 'bg-danger',
 };
 
+const STATUS_WORD: Record<Slot['state'], string> = {
+  charged: 'Ready',
+  charging: 'Charging',
+  empty: 'Empty',
+  fault: 'Fault',
+};
+
+/** A larger padlock that shows the slot number on it (no separate "Slot N" text). */
+function SlotLock({ n, open, active, highlight }: { n: number; open?: boolean; active: boolean; highlight?: boolean }) {
+  const tint = open || highlight;
+  const numberColor = open ? colors.brand : active ? colors.ink : colors.faint;
+  return (
+    <View
+      style={{
+        width: 40,
+        borderRadius: 12,
+        paddingVertical: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: tint ? '#EAF1FF' : colors.canvas,
+        borderWidth: 1,
+        borderColor: tint ? colors.brand : colors.line,
+      }}
+    >
+      {open ? <LockOpen size={17} color={colors.brand} /> : <Lock size={17} color={active ? colors.muted : colors.faint} />}
+      <Txt weight="black" style={{ marginTop: 1, fontSize: 14, lineHeight: 16, color: numberColor }}>
+        {n}
+      </Txt>
+    </View>
+  );
+}
+
 function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; open?: boolean }) {
   const empty = slot.state === 'empty';
   return (
     <MotiView
-      animate={{ scale: highlight ? 1 : 1 }}
-      className={cn(
-        'mb-3 rounded-2xl border bg-surface p-3',
-        highlight ? 'border-brand-500' : 'border-line',
-      )}
+      className={cn('mb-3 rounded-2xl border bg-surface p-3', highlight ? 'border-brand-500' : 'border-line')}
       style={{ width: '31.5%' }}
     >
       {highlight && <View className="absolute -top-1 left-4 right-4 h-1 rounded-full bg-brand-500" />}
       <View className="flex-row items-start justify-between">
-        <BatteryRing soc={slot.soc} state={slot.state} size={48} />
-        <View className={cn('h-7 w-7 items-center justify-center rounded-lg', empty ? 'bg-canvas' : highlight || open ? 'bg-brand-50' : 'bg-canvas')}>
-          {open ? <LockOpen size={14} color={colors.brand} /> : <Lock size={14} color={empty ? colors.faint : colors.muted} />}
-        </View>
+        <BatteryRing soc={slot.soc} state={slot.state} size={46} />
+        <SlotLock n={slot.slot_number} open={open} active={!empty} highlight={highlight} />
       </View>
       {/* Full battery ID — shrinks to fit the card */}
       <Txt
@@ -42,11 +68,11 @@ function SlotCard({ slot, highlight, open }: { slot: Slot; highlight?: boolean; 
       >
         {slot.serial ?? '—'}
       </Txt>
-      <View className="mt-0.5 flex-row items-center justify-between">
-        <Txt weight="bold" className="text-[10px] text-faint">
-          Slot {slot.slot_number}
-        </Txt>
+      <View className="mt-1 flex-row items-center gap-1.5">
         <View className={cn('h-2 w-2 rounded-full', DOT[slot.state])} />
+        <Txt weight="semibold" className="text-[10.5px] text-faint">
+          {STATUS_WORD[slot.state]}
+        </Txt>
       </View>
     </MotiView>
   );
