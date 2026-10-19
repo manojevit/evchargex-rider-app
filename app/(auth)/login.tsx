@@ -27,20 +27,20 @@ export default function Login() {
       <StatusBar style="light" />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {/* Brand hero */}
+          {/* Brand hero (brand black, matching the splash + app icon) */}
           <LinearGradient
-            colors={gradients.brand}
+            colors={gradients.splash}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{ paddingTop: insets.top + 22, paddingHorizontal: 24, paddingBottom: 52, borderBottomLeftRadius: 36, borderBottomRightRadius: 36, overflow: 'hidden' }}
           >
             {/* Faint electric glow motif */}
-            <View pointerEvents="none" style={{ position: 'absolute', top: -70, right: -50, width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(255,255,255,0.10)' }} />
-            <View pointerEvents="none" style={{ position: 'absolute', top: 30, right: 36, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,0.08)' }} />
+            <View pointerEvents="none" style={{ position: 'absolute', top: -70, right: -50, width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(56,189,248,0.12)' }} />
+            <View pointerEvents="none" style={{ position: 'absolute', top: 40, right: 30, width: 130, height: 130, borderRadius: 65, backgroundColor: 'rgba(30,99,240,0.18)' }} />
 
             <MotiView from={{ opacity: 0, translateY: 12 }} animate={{ opacity: 1, translateY: 0 }}>
-              <View style={{ alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: 18, paddingHorizontal: 16, paddingVertical: 12 }}>
-                <Logo variant="row" tone="dark" size="md" tagline />
+              <View style={{ alignSelf: 'flex-start' }}>
+                <Logo variant="row" tone="light" size="md" tagline />
               </View>
               <Txt weight="black" className="mt-9 text-[32px] leading-10 text-white" style={{ color: '#fff' }}>
                 Full charge,{'\n'}every ride.

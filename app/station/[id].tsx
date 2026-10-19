@@ -19,6 +19,7 @@ import { AppBar } from '@/components/ui/AppBar';
 import { Screen } from '@/components/ui/Screen';
 import { CabinetGrid } from '@/components/CabinetGrid';
 import { StationImageCarousel } from '@/components/StationImageCarousel';
+import { BatteryCount } from '@/components/ui/BatteryCount';
 import { colors } from '@/lib/theme';
 import { cn } from '@/lib/cn';
 import { getStation } from '@/lib/data/stations';
@@ -108,7 +109,12 @@ export default function StationDetail() {
 
         {/* Availability — compact single row */}
         <View className="mt-5 flex-row items-center justify-between rounded-2xl border border-border bg-card px-4 py-3" style={{ shadowColor: '#0B1420', shadowOpacity: 0.04, shadowRadius: 10, elevation: 1 }}>
-          <AvailStat icon={<BatteryFull size={17} color={colors.success} />} value={online ? available : '—'} label="charged" />
+          <View className="flex-row items-center gap-1.5">
+            <BatteryCount count={available} active={online} size="md" />
+            <Txt weight="medium" className="text-[12px] text-muted">
+              charged
+            </Txt>
+          </View>
           <View className="h-6 w-px bg-border" />
           <AvailStat icon={<BatteryWarning size={17} color={colors.warn} />} value={online ? empty : '—'} label="empty" />
           <View className="h-6 w-px bg-border" />
