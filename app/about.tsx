@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Linking, Pressable, View } from 'react-native';
 import { MotiView } from '@/lib/motion';
-import { ChevronDown, FileText, Globe, Mail, Scale, ShieldCheck } from 'lucide-react-native';
+import { ChevronDown, FileText, Globe, Mail, RotateCcw, Scale, ShieldAlert, ShieldCheck } from 'lucide-react-native';
 import { Txt } from '@/components/ui/Txt';
 import { Card } from '@/components/ui/Card';
 import { AppBar } from '@/components/ui/AppBar';
@@ -16,19 +16,64 @@ const LEGAL = [
     id: 'terms',
     icon: FileText,
     title: 'Terms of Service',
-    body: 'By using EVCHARGEX you agree to swap only certified packs at authorised stations, keep your account details accurate, and use the service lawfully. This is a demo build, so no real agreement is formed.',
+    body: `Welcome to EVCHARGEX. By creating an account and using the app, you agree to these terms.
+
+• Eligibility — you must be at least 18 and hold a valid licence for the vehicle you ride.
+• Swaps — only certified EVCHARGEX packs may be swapped, and only at authorised stations. Follow the on-screen steps and never force a slot.
+• Your plan — an active subscription is required to swap. Charges renew automatically unless cancelled before the renewal date.
+• Fair use — packs remain the property of EVCHARGEX and must be returned undamaged. Tampering, reselling or charging packs outside the network is not allowed.
+• Liability — EVCHARGEX is not responsible for damage caused by misuse or by riding an unsafe vehicle.
+
+This is a demo build for presentation — no real agreement is formed and no real payment is taken.`,
   },
   {
     id: 'privacy',
     icon: ShieldCheck,
     title: 'Privacy Policy',
-    body: 'We use your mobile number and email only to run your account, process swaps and send service updates. We never sell your data. This demo runs entirely on dummy data.',
+    body: `Your privacy matters to us. Here's what we collect and why.
+
+• What we collect — your name, mobile number, email (if you add one), vehicle details and swap history.
+• Why — to run your account, authorise swaps, send service updates and provide support.
+• Sharing — we never sell your data. We share only what's needed with stations and payment partners to complete a swap or renewal.
+• Your choices — you can edit your profile, verify or change your email, and request deletion of your data at any time.
+• Security — your data is encrypted in transit and access is limited to authorised staff.
+
+This demo runs entirely on dummy data — nothing you enter is sent to or stored on a server.`,
+  },
+  {
+    id: 'cancellation',
+    icon: RotateCcw,
+    title: 'Cancellation & refunds',
+    body: `You can cancel your subscription anytime from Subscription & plan.
+
+• Cancellation takes effect at the end of the current billing cycle — your swaps keep working until then.
+• Because swaps are a service you consume, completed billing cycles are non-refundable except where required by law.
+• If a payment fails, your plan pauses until it's resolved; you won't be charged twice.`,
+  },
+  {
+    id: 'safety',
+    icon: ShieldAlert,
+    title: 'Battery safety',
+    body: `Safety comes first — please keep these in mind.
+
+• Only swap at authorised stations and follow the in-app steps.
+• Never use a pack that is damaged, swollen or overheating — report it from Help straight away.
+• Keep pack connectors clean and dry.
+• In an emergency, call the station helpline shown on each station's page.`,
   },
   {
     id: 'licenses',
     icon: Scale,
     title: 'Open-source licenses',
-    body: 'EVCHARGEX is built with React Native, Expo and other open-source libraries, used under their respective licenses.',
+    body: `EVCHARGEX is built with open-source software, used gratefully under their respective licenses, including:
+
+• React Native & React
+• Expo & Expo Router
+• Moti & Reanimated (animations)
+• NativeWind (styling)
+• lucide-react-native (icons)
+
+Full license texts are available on request.`,
   },
 ];
 

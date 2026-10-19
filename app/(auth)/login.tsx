@@ -39,7 +39,9 @@ export default function Login() {
             <View pointerEvents="none" style={{ position: 'absolute', top: 30, right: 36, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,0.08)' }} />
 
             <MotiView from={{ opacity: 0, translateY: 12 }} animate={{ opacity: 1, translateY: 0 }}>
-              <Logo variant="row" tone="light" size="md" tagline />
+              <View style={{ alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: 18, paddingHorizontal: 16, paddingVertical: 12 }}>
+                <Logo variant="row" tone="dark" size="md" tagline />
+              </View>
               <Txt weight="black" className="mt-9 text-[32px] leading-10 text-white" style={{ color: '#fff' }}>
                 Full charge,{'\n'}every ride.
               </Txt>
